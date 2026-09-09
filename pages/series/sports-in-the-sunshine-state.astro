@@ -1,0 +1,133 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SeriesHero from "../../components/book/SeriesHero.astro";
+import BookCard from "../../components/book/BookCard.astro";
+import ReadingOrder from "../../components/book/ReadingOrder.astro";
+import SeriesSetting from "../../components/book/SeriesSetting.astro";
+import Newsletter from "../../components/shared/Newsletter.astro";
+import { getBooksInSeries, getSeriesBySlug } from "../../data/catalog.js";
+
+const series = getSeriesBySlug("sports-in-the-sunshine-state");
+const books = getBooksInSeries("sports-in-the-sunshine-state");
+const [pucksAndPranks, offTheBench, bookThree] = books;
+
+const readingOrderItems = books.map((b) => ({
+  code: b.series.position.isPrequel ? "Prequel" : String(b.series.position.order).replace(/\.0$/, ""),
+  title: b.title,
+  href: `#${b.slug}-shelf`,
+}));
+---
+
+<BaseLayout title="Sports in the Sunshine State — Tiffany Noelle Chacon" currentSeries="sports-in-the-sunshine-state">
+  <SeriesHero
+    eyebrow={`A Series by ${series.authors.map((a) => a.name).join(" & ")}`}
+    title={series.title}
+    pitch={series.tagline}
+    primaryCta={{ label: `Start Free with ${pucksAndPranks.title}`, href: "#start-here" }}
+    secondaryCta={{ label: `${offTheBench.title} →`, href: "#flagship" }}
+    entryCover={pucksAndPranks.cover}
+    flagshipCover={offTheBench.cover}
+    accentVar="var(--series-sunshine-state)"
+    accentTextVar="var(--series-sunshine-state-text)"
+  />
+
+  <section class="section start-here-section" id="start-here" aria-labelledby="start-here-title">
+    <div class="wrap">
+      <p class="eyebrow">Begin The Series</p>
+      <h2 class="start-here-section__title" id="start-here-title">Start here — free</h2>
+      <BookCard
+        id={pucksAndPranks.slug}
+        variant="feature"
+        kicker={pucksAndPranks.series.position.label.replace(" · Start Here", "")}
+        startHere
+        title={pucksAndPranks.title}
+        hook={pucksAndPranks.hook}
+        tropes={pucksAndPranks.tropes}
+        cover={pucksAndPranks.cover}
+        accentVar="var(--series-sunshine-state)"
+        accentTextVar="var(--series-sunshine-state-text)"
+      />
+    </div>
+  </section>
+
+  <section class="section series-shelf-section" id="reading-order" aria-labelledby="reading-order-heading">
+    <div class="wrap">
+      <p class="eyebrow">Reading Order</p>
+      <h2 class="series-shelf-section__heading" id="reading-order-heading">Every book, in order</h2>
+      <div class="series-shelf-section__order">
+        <ReadingOrder items={readingOrderItems} accentTextVar="var(--series-sunshine-state-text)" />
+      </div>
+      <div class="hshelf series-shelf series-shelf--roomy">
+        {books.map((b) => (
+          <BookCard
+            id={`${b.slug}-shelf`}
+            variant="shelf"
+            spotlight={b.series.position.isPrequel}
+            comingSoon={b.release.status === "coming-soon"}
+            kicker={b.series.position.isPrequel ? b.series.position.label.replace(" · Start Here", "") : b.series.position.label}
+            startHere={b.series.position.isPrequel}
+            title={b.title}
+            note={b.release.status === "coming-soon" ? b.hook : null}
+            hook={b.release.status === "coming-soon" ? null : b.hook}
+            tropes={b.tropes}
+            badge={b.release.status === "coming-soon" ? "Coming Soon" : null}
+            cover={b.cover}
+            accentVar="var(--series-sunshine-state)"
+            accentTextVar="var(--series-sunshine-state-text)"
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <SeriesSetting
+    eyebrow="The Sunshine State Setting"
+    lead="Florida"
+    paragraphs={[
+      "is the backdrop for every book in this series — banter on the field, chemistry in the locker room hallway, and a scoreboard always somewhere in the background.",
+      `Each book follows a different couple and a different sport — hockey in ${pucksAndPranks.title}, football in ${offTheBench.title} — bound by the same clean, kisses-only promise.`,
+    ]}
+    accentTextVar="var(--series-sunshine-state-text)"
+  />
+
+  <section class="section section--surface flagship-cta" id="flagship" aria-label={`The Latest Chapter: ${offTheBench.title}`}>
+    <div class="wrap">
+      <p class="eyebrow">The Latest Chapter</p>
+      <BookCard
+        id={`${offTheBench.slug}-flagship`}
+        variant="feature"
+        kicker={offTheBench.series.position.label}
+        title={offTheBench.title}
+        hook={offTheBench.hook}
+        tropes={offTheBench.tropes}
+        cover={offTheBench.cover}
+        accentVar="var(--series-sunshine-state)"
+        accentTextVar="var(--series-sunshine-state-text)"
+      />
+    </div>
+  </section>
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  .start-here-section__title,
+  .series-shelf-section__heading {
+    font-style: italic;
+    font-size: var(--step-3);
+    margin-bottom: var(--space-lg);
+  }
+  .series-shelf-section__order {
+    margin-bottom: var(--space-lg);
+  }
+  .series-shelf {
+    align-items: flex-start;
+  }
+  @media (min-width: 860px) {
+    .series-shelf.series-shelf--roomy {
+      overflow-x: auto;
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+    }
+  }
+</style>

@@ -1,0 +1,87 @@
+---
+// Recovered verbatim from 6 of 7 Artifacts (data-astro-cid-j52x5h6k) —
+// the About Artifact folds this same copy into its own hero/pathway
+// sections instead of this standalone component; see
+// Recovery-Inventory-Report.md Section 4. Renders identically here for
+// consistency across the other 6 rebuilt pages.
+//
+// The literal recovered dev comment about ConvertKit not being wired up
+// yet is preserved verbatim below — do not remove it or wire the form
+// until that integration actually happens.
+import Cover from "./Cover.astro";
+import { getBookBySlug } from "../../data/catalog.js";
+
+const shootTheMoon = getBookBySlug("shoot-the-moon");
+---
+
+<section class="section newsletter" id="newsletter">
+  <div class="wrap newsletter__grid">
+    <div class="newsletter__cover">
+      <Cover image={shootTheMoon?.cover.image} alt={shootTheMoon?.cover.alt} />
+    </div>
+    <div class="newsletter__copy">
+      <p class="eyebrow">Get a Free Book</p>
+      <h2>Start with Shoot the Moon — on the house.</h2>
+      <p>
+        Join Tiffany's reader list for a free copy of Shoot the Moon, plus new release news and the occasional peek
+        behind the scenes. No spam, unsubscribe anytime.
+      </p>
+      <form class="newsletter__form" data-convertkit-form novalidate>
+        <div class="field">
+          <label for="newsletter-email">Email address</label>
+          <input type="email" id="newsletter-email" name="email" placeholder="you@example.com" autocomplete="email" required />
+        </div>
+        <button class="btn btn--primary" type="submit">Send Me the Free Book</button>
+      </form>
+      <p class="field-note">We respect your privacy. Unsubscribe at any time.</p>
+      <p class="field-note newsletter__flag">
+        Integration pending — this form isn't wired to ConvertKit yet; see <code>data-convertkit-form</code> in
+        <code>Newsletter.astro</code> as the intended hook point.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .newsletter__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .newsletter__copy p:not(.field-note) {
+    color: var(--color-muted);
+    max-width: 46ch;
+    margin-block: var(--space-sm) var(--space-lg);
+  }
+  .newsletter__form {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-sm);
+    max-width: 30rem;
+    margin-bottom: var(--space-2xs);
+  }
+  .newsletter__form .field {
+    flex: 1;
+  }
+  .newsletter__flag {
+    margin-top: var(--space-2xs);
+  }
+  .newsletter__flag code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
+  @media (max-width: 780px) {
+    .newsletter__grid {
+      grid-template-columns: 1fr;
+    }
+    .newsletter__cover {
+      max-width: 9rem;
+      margin-inline: auto;
+    }
+    .newsletter__form {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+</style>

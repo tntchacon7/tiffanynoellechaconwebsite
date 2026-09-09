@@ -1,0 +1,220 @@
+---
+// Recovered verbatim from all 7 Artifacts (data-astro-cid-3ef6ksr2), including
+// the original dev comment about the Phase 3B.1 masthead layout, and the
+// [TYLER]-confirmed external Podcast link (see Recovery-Inventory-Report.md
+// Section 2 — the About Artifact's external link, not the internal /podcast/
+// route shown in 6 of 7 Artifacts, is the correct current behavior).
+import Wordmark from "./Wordmark.astro";
+
+const NAV = [
+  { label: "Home", href: "/" },
+  { label: "My Books", href: "/books/" },
+  { label: "Find Your Next Read", href: "/find-your-next-read/" },
+  { label: "Clean Romance", href: "/clean-romance/" },
+  { label: "Podcast", href: "http://thecleanromancepodcast.com/", external: true },
+  { label: "About", href: "/about/" },
+];
+---
+
+<!--
+  Phase 3B.1: masthead layout — the wordmark gets its own centered
+  row (true viewport-relative centering, not just centered inside a
+  left column), with primary nav centered on a second row below it
+  and the CTA pinned to that row's right edge so the nav still
+  visually centers. Collapses back to the original compact
+  wordmark-left / hamburger-right single row on mobile.
+-->
+<header class="site-header" id="site-header">
+  <div class="wrap wrap--wide site-header__row">
+    <Wordmark variant="header" />
+    <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="mobile-nav" aria-expanded="false">
+      <span class="visually-hidden">Open menu</span>
+      <span class="menu-toggle__bars" aria-hidden="true"></span>
+    </button>
+  </div>
+  <div class="wrap wrap--wide site-header__navrow">
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        {NAV.map((item) => (
+          <li>
+            <a href={item.href} {...item.external ? { target: "_blank", rel: "noopener noreferrer" } : {}}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <a class="btn btn--primary btn--sm site-header__navcta" href="/free-book/">Get a Free Book</a>
+  </div>
+  <div class="mobile-nav" id="mobile-nav" hidden>
+    <nav aria-label="Mobile">
+      <ul>
+        {NAV.map((item) => (
+          <li>
+            <a href={item.href} {...item.external ? { target: "_blank", rel: "noopener noreferrer" } : {}}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <a class="btn btn--primary" href="/free-book/">Get a Free Book</a>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById("menu-toggle");
+  const nav = document.getElementById("mobile-nav");
+  toggle?.addEventListener("click", () => {
+    const expanded = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!expanded));
+    if (nav) nav.hidden = expanded;
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    background: var(--color-bg);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--duration-base) var(--ease-editorial), box-shadow var(--duration-base) var(--ease-editorial);
+  }
+  .site-header.is-scrolled {
+    border-bottom-color: var(--color-border);
+    box-shadow: var(--shadow-sm);
+  }
+  .site-header__row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: var(--space-sm) var(--space-2xs);
+  }
+  .site-header__row .wordmark-name {
+    font-size: 1.4rem;
+  }
+  .site-header__row .wordmark-sub {
+    font-size: 0.62rem;
+  }
+  .site-header__navrow {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: var(--space-2xs) var(--space-sm);
+    border-top: var(--border-hairline);
+  }
+  .site-nav ul {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+  .site-nav a {
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: none;
+    padding-block: var(--space-3xs);
+    border-bottom: 1px solid transparent;
+  }
+  .site-nav a:hover {
+    color: var(--color-tiffany-text);
+    border-bottom-color: currentColor;
+  }
+  .site-header__navcta {
+    position: absolute;
+    right: 0;
+  }
+  .btn--sm {
+    padding: 0.6em 1.2em;
+    font-size: var(--step--1);
+  }
+  .menu-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+  .menu-toggle__bars,
+  .menu-toggle__bars:before,
+  .menu-toggle__bars:after {
+    content: "";
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--color-ink);
+    position: relative;
+  }
+  .menu-toggle__bars:before {
+    position: absolute;
+    top: -6px;
+  }
+  .menu-toggle__bars:after {
+    position: absolute;
+    top: 6px;
+  }
+  .menu-toggle[aria-expanded="true"] .menu-toggle__bars {
+    background: transparent;
+  }
+  .menu-toggle[aria-expanded="true"] .menu-toggle__bars:before {
+    top: 0;
+    transform: rotate(45deg);
+  }
+  .menu-toggle[aria-expanded="true"] .menu-toggle__bars:after {
+    top: 0;
+    transform: rotate(-45deg);
+  }
+  .mobile-nav {
+    display: none;
+  }
+  @media (max-width: 900px) {
+    .site-header__row {
+      justify-content: space-between;
+      padding-block: var(--space-sm);
+    }
+    .site-header__row .wordmark-name {
+      font-size: 1.15rem;
+    }
+    .site-header__navrow {
+      display: none;
+    }
+    .menu-toggle {
+      display: inline-flex;
+    }
+    .mobile-nav[hidden] {
+      display: none;
+    }
+    .mobile-nav:not([hidden]) {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      padding: var(--space-md) var(--gutter) var(--space-lg);
+      background: var(--color-bg);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .mobile-nav ul {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .mobile-nav a {
+      display: flex;
+      align-items: center;
+      font-family: var(--font-display);
+      font-size: var(--step-1);
+      color: var(--color-ink);
+      text-decoration: none;
+      padding-block: var(--space-2xs);
+      min-height: 44px;
+    }
+    .mobile-nav .btn {
+      width: 100%;
+    }
+  }
+</style>

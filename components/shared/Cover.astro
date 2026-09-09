@@ -1,0 +1,51 @@
+---
+// Recovered global `.cover` utility (no data-astro-cid scoping on the base
+// rule in any Artifact — see Recovery-Inventory-Report.md addendum) plus
+// the `.cover--placeholder` variant used for Sports in the Sunshine State
+// Book Three, whose cover doesn't exist yet. `data-astro-cid-4hotwelw`'s
+// only *scoped* addition found anywhere was a `.cover--compact` size
+// modifier (not currently used by any of the 7 rebuilt pages, but kept
+// here since it's a real recovered rule).
+export interface Props {
+  image?: string | null;
+  alt?: string | null;
+  placeholderTitle?: string;
+  placeholderKicker?: string;
+  accentVar?: string; // e.g. "var(--series-sunshine-state)"
+  compact?: boolean;
+  loading?: "eager" | "lazy";
+}
+const { image, alt, placeholderTitle, placeholderKicker = "Coming Soon", accentVar, compact = false, loading = "lazy" } = Astro.props;
+---
+
+{
+  image ? (
+    <div class={`cover${compact ? " cover--compact" : ""}`}>
+      <img src={image} alt={alt ?? ""} width="480" height="768" loading={loading} />
+    </div>
+  ) : (
+    <div
+      class={`cover cover--placeholder${compact ? " cover--compact" : ""}`}
+      role="img"
+      aria-label={`Cover placeholder for ${placeholderTitle}`}
+      style={accentVar ? `--_accent: ${accentVar}` : undefined}
+    >
+      <span class="cover-kicker">{placeholderKicker}</span>
+      <span class="cover-title">{placeholderTitle}</span>
+      <span class="cover-author">T. N. Chacon</span>
+    </div>
+  )
+}
+
+<style>
+  /* .cover / .cover--placeholder base rules live in global.css since no
+     Artifact scoped them to this component; only the compact modifier
+     below was found scoped to data-astro-cid-4hotwelw. */
+  .cover--compact .cover-title {
+    font-size: 0.95rem;
+  }
+  .cover--compact .cover-kicker,
+  .cover--compact .cover-author {
+    font-size: 0.58rem;
+  }
+</style>

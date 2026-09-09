@@ -1,0 +1,367 @@
+---
+// Recovered verbatim (data-astro-cid-k2hyfrao page shell, plus
+// data-astro-cid-ylz323d5 series-header, data-astro-cid-ypwhgd7g start-here
+// list, data-astro-cid-negtqcsd catalog filter, data-astro-cid-rob3y5qi
+// reading order, data-astro-cid-3fvxjd35 book cards) — see
+// Recovery-Inventory-Report.md Section 1.6 / 4.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BookCard from "../../components/book/BookCard.astro";
+import ReadingOrder from "../../components/book/ReadingOrder.astro";
+import { SERIES, getBooksInSeries, getStandaloneBooks } from "../../data/catalog.js";
+
+const seriesData = SERIES.map((s) => ({ ...s, books: getBooksInSeries(s.slug) }));
+const standalone = getStandaloneBooks();
+
+const startHere = [
+  { prompt: "Want a small-town romance?", title: "Shoot the Moon", href: "#shoot-the-moon", accentTextVar: "var(--series-starlight-valley-text)" },
+  { prompt: "Want sports and banter?", title: "Pucks & Pranks", href: "#pucks-and-pranks", accentTextVar: "var(--series-sunshine-state-text)" },
+  { prompt: "Want horses and ambition?", title: "Off Course", href: "#off-course", accentTextVar: "var(--series-equestrian-dreams-text)" },
+  { prompt: "Want football?", title: "Off the Bench", href: "#off-the-bench", accentTextVar: "var(--series-sunshine-state-text)" },
+  { prompt: "Want a Christmas read?", title: "A Christmas Court(ship)", href: "#a-christmas-courtship", accentTextVar: "var(--color-gold-text)" },
+];
+
+const seriesAccent = {
+  "love-in-starlight-valley": { accent: "var(--series-starlight-valley)", accentText: "var(--series-starlight-valley-text)", surface: false },
+  "sports-in-the-sunshine-state": { accent: "var(--series-sunshine-state)", accentText: "var(--series-sunshine-state-text)", surface: true },
+  "equestrian-dreams": { accent: "var(--series-equestrian-dreams)", accentText: "var(--series-equestrian-dreams-text)", surface: false },
+};
+---
+
+<BaseLayout
+  title="My Books — Tiffany Noelle Chacon"
+  description="Browse Tiffany Noelle Chacon's full catalog of clean, kisses-only contemporary romance — Love in Starlight Valley, Sports in the Sunshine State, Equestrian Dreams, and standalone collaborations."
+>
+  <section class="section books-intro">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">My Books</p>
+      <h1 class="books-intro__headline">Three series. One reading promise.</h1>
+      <p class="books-intro__body">
+        Clean, kisses-only contemporary romance and rom-com — small-town sweethearts, sports banter, and equestrian
+        ambition, all with the happily-ever-after guaranteed. Start anywhere below, or use{" "}
+        <em>Where should I start?</em> to find your next favorite.
+      </p>
+      <div class="books-intro__promise">
+        <hr class="rule--accent" />
+        <p>Kisses only. No explicit scenes. Ever.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight section--surface" aria-labelledby="start-here-heading">
+    <div class="wrap wrap--narrow">
+      <h2 class="books-section-heading" id="start-here-heading">Where should I start?</h2>
+      <ul class="start-here">
+        {startHere.map((row) => (
+          <li class="start-here__row" style={`--_accent-text: ${row.accentTextVar}`}>
+            <span class="start-here__prompt">{row.prompt}</span>
+            <a class="start-here__answer" href={row.href}>
+              Start with <em>{row.title}</em> <span class="start-here__arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <div class="wrap wrap--wide">
+    <div class="catalog-filter" role="group" aria-label="Browse by series">
+      <button class="catalog-filter__btn" type="button" data-target="all" aria-pressed="true">All Books</button>
+      {seriesData.map((s) => (
+        <button class="catalog-filter__btn" type="button" data-target={s.slug} aria-pressed="false">{s.title}</button>
+      ))}
+      <button class="catalog-filter__btn" type="button" data-target="other-books" aria-pressed="false">Other Books</button>
+    </div>
+  </div>
+
+  {seriesData.map((s) => {
+    const acc = seriesAccent[s.slug];
+    const readingOrderItems = s.books.map((b) => ({
+      code: b.series.position.isPrequel ? "Prequel" : String(b.series.position.order).replace(/\.0$/, ""),
+      title: b.title,
+      href: `#${b.slug}`,
+    }));
+    return (
+      <section
+        class={`section series-section${acc.surface ? " section--surface" : ""}`}
+        id={s.slug}
+        data-category={s.slug}
+        aria-labelledby={`${s.slug}-heading`}
+        style={`--_accent: ${acc.accent}; --_accent-text: ${acc.accentText}`}
+      >
+        <div class="wrap">
+          <div class="series-header" style={`--_accent-text: ${acc.accentText}`}>
+            <p class="series-header__eyebrow">Series</p>
+            <h2 class="series-header__name" id={`${s.slug}-heading`}>{s.title}</h2>
+            <p class="series-header__pitch">{s.tagline}</p>
+            {s.authors.length > 1 && (
+              <p class="series-header__coauthor">
+                Co-written with <a href={s.authors[1].url} target="_blank" rel="noopener noreferrer">{s.authors[1].name}</a>
+              </p>
+            )}
+          </div>
+          <div class="series-section__order">
+            <ReadingOrder items={readingOrderItems} accentTextVar={acc.accentText} />
+          </div>
+          <ul class="series-shelf hshelf">
+            {s.books.map((b) => (
+              <li>
+                <BookCard
+                  id={b.slug}
+                  variant="shelf"
+                  spotlight={b.series.position.isPrequel}
+                  comingSoon={b.release.status === "coming-soon"}
+                  kicker={b.series.position.isPrequel ? b.series.position.label.replace(" · Start Here", "") : b.series.position.label}
+                  startHere={b.series.position.isPrequel}
+                  title={b.title}
+                  coauthor={b.slug === "promise-you-the-moon" ? "Co-written with Lindsay Rochester" : null}
+                  note={b.release.status === "coming-soon" ? b.hook : null}
+                  hook={b.release.status === "coming-soon" ? null : b.hook}
+                  tropes={b.tropes}
+                  badge={
+                    b.release.status === "coming-soon"
+                      ? "Coming Soon"
+                      : b.awards[0]
+                        ? `Winner — ${b.awards[0].name}`
+                        : null
+                  }
+                  cover={b.cover}
+                  accentVar={acc.accent}
+                  accentTextVar={acc.accentText}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    );
+  })}
+
+  <section class="section section--surface other-books-section" id="other-books" data-category="other-books" aria-labelledby="other-books-heading">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">More From Tiffany</p>
+        <h2 id="other-books-heading">Other Books &amp; Collaborations</h2>
+        <p class="other-books-section__intro">
+          Standalone novellas written for multi-author collections and podcast projects — not part of the three series above.
+        </p>
+      </div>
+      <ul class="other-books-grid">
+        {standalone.map((b) => (
+          <li>
+            <BookCard
+              id={b.slug}
+              variant="feature"
+              kicker={b.collaboration}
+              title={b.title}
+              hook={b.hook}
+              badge={b.awards[0] ? `Winner — ${b.awards[0].name}` : null}
+              cover={b.cover}
+              accentVar="var(--color-gold)"
+              accentTextVar="var(--color-gold-text)"
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* [ARTIFACT]: the recovered My Books page has no Newsletter section —
+  confirmed by grepping the raw artifact HTML for "newsletter"/"Get a Free
+  Book" text, both absent. Intentionally omitted here to match. */}
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>(".catalog-filter__btn");
+  const sections = document.querySelectorAll<HTMLElement>("[data-category]");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.target;
+      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      sections.forEach((s) => {
+        s.hidden = target !== "all" && s.dataset.category !== target;
+      });
+    });
+  });
+</script>
+
+<style>
+  .books-intro {
+    padding-bottom: var(--space-lg);
+  }
+  .books-intro__headline {
+    font-style: italic;
+    font-size: var(--step-5);
+    margin-top: var(--space-xs);
+  }
+  .books-intro__body {
+    font-size: var(--step-1);
+    color: var(--color-muted);
+    max-width: 46ch;
+    margin-top: var(--space-md);
+  }
+  .books-intro__body em {
+    font-style: italic;
+    color: var(--color-ink);
+  }
+  .books-intro__promise {
+    margin-top: var(--space-lg);
+  }
+  .books-intro__promise .rule--accent {
+    margin-bottom: var(--space-xs);
+  }
+  .books-intro__promise p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+  }
+  .books-section-heading {
+    font-style: italic;
+    font-size: var(--step-3);
+    margin-bottom: var(--space-md);
+  }
+  .start-here {
+    display: flex;
+    flex-direction: column;
+  }
+  .start-here__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-xs) var(--space-lg);
+    padding-block: var(--space-sm);
+    border-bottom: var(--border-hairline);
+  }
+  .start-here__row:first-child {
+    border-top: var(--border-hairline);
+  }
+  .start-here__prompt {
+    font-size: var(--step-0);
+    color: var(--color-muted);
+  }
+  .start-here__answer {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2xs);
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    text-decoration: none;
+    color: var(--_accent-text, var(--color-tiffany-text));
+    white-space: nowrap;
+  }
+  .start-here__answer em {
+    font-style: italic;
+  }
+  .start-here__arrow {
+    display: inline-block;
+    transition: transform var(--duration-fast) var(--ease-editorial);
+  }
+  .start-here__answer:hover .start-here__arrow {
+    transform: translate(3px);
+  }
+  @media (max-width: 640px) {
+    .start-here__row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-3xs);
+    }
+  }
+  .catalog-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    border-top: var(--border-hairline);
+    border-bottom: var(--border-hairline);
+    padding-block: var(--space-sm);
+  }
+  .catalog-filter__btn {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: var(--step--1);
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--color-muted);
+    padding: 0.6em 1em;
+    min-height: 44px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-editorial), color var(--duration-fast) var(--ease-editorial);
+  }
+  .catalog-filter__btn:hover {
+    color: var(--color-ink);
+  }
+  .catalog-filter__btn[aria-pressed="true"] {
+    background: var(--color-ink);
+    color: var(--color-bg);
+  }
+  @media (max-width: 640px) {
+    .catalog-filter {
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+    }
+    .catalog-filter__btn {
+      flex-shrink: 0;
+    }
+  }
+  .series-header__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--_accent-text);
+    margin-bottom: var(--space-2xs);
+  }
+  .series-header__name {
+    font-style: italic;
+    font-size: var(--step-4);
+    max-width: 20ch;
+  }
+  .series-header__pitch {
+    color: var(--color-muted);
+    max-width: 46ch;
+    margin-top: var(--space-sm);
+    font-size: var(--step-0);
+  }
+  .series-header__coauthor {
+    margin-top: var(--space-sm);
+    font-size: var(--step-0);
+    font-weight: 600;
+    color: var(--_accent-text);
+  }
+  .series-header__coauthor a {
+    color: inherit;
+  }
+  .series-section__order {
+    margin-block: var(--space-md) var(--space-lg);
+  }
+  .series-shelf {
+    align-items: flex-start;
+  }
+  .series-shelf > li {
+    display: block;
+  }
+  .other-books-section__intro {
+    color: var(--color-muted);
+    max-width: 46ch;
+    margin-top: var(--space-2xs);
+  }
+  .other-books-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+  .other-books-grid > li:not(:last-child) {
+    padding-bottom: var(--space-2xl);
+    border-bottom: var(--border-hairline);
+  }
+  @media (max-width: 780px) {
+    .other-books-grid > li :global(.book-card--feature) {
+      flex-direction: column;
+    }
+    .other-books-grid > li :global(.book-card--feature .book-card__cover) {
+      width: 11rem;
+    }
+  }
+</style>

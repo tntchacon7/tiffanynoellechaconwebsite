@@ -1,0 +1,140 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SeriesHero from "../../components/book/SeriesHero.astro";
+import BookCard from "../../components/book/BookCard.astro";
+import ReadingOrder from "../../components/book/ReadingOrder.astro";
+import SeriesSetting from "../../components/book/SeriesSetting.astro";
+import SeriesCoauthor from "../../components/book/SeriesCoauthor.astro";
+import Newsletter from "../../components/shared/Newsletter.astro";
+import { getBooksInSeries, getSeriesBySlug, PEOPLE } from "../../data/catalog.js";
+
+const series = getSeriesBySlug("love-in-starlight-valley");
+const books = getBooksInSeries("love-in-starlight-valley");
+const [shootTheMoon, promiseYouTheMoon] = books;
+
+const readingOrderItems = books.map((b) => ({
+  code: b.series.position.isPrequel ? "Prequel" : String(b.series.position.order).replace(/\.0$/, ""),
+  title: b.title,
+  href: `#${b.slug}-shelf`,
+}));
+---
+
+<BaseLayout title="Love in Starlight Valley — Tiffany Noelle Chacon" currentSeries="love-in-starlight-valley">
+  <SeriesHero
+    eyebrow={`A Series by ${series.authors.map((a) => a.name).join(" & ")}`}
+    title={series.title}
+    pitch={series.tagline}
+    primaryCta={{ label: `Start Free with ${shootTheMoon.title}`, href: "#start-here" }}
+    secondaryCta={{ label: `${promiseYouTheMoon.title} →`, href: "#flagship" }}
+    entryCover={shootTheMoon.cover}
+    flagshipCover={promiseYouTheMoon.cover}
+    accentVar="var(--series-starlight-valley)"
+    accentTextVar="var(--series-starlight-valley-text)"
+  />
+
+  <section class="section start-here-section" id="start-here" aria-labelledby="start-here-title">
+    <div class="wrap">
+      <p class="eyebrow">Begin The Series</p>
+      <h2 class="start-here-section__title" id="start-here-title">Start here — free</h2>
+      <BookCard
+        id={shootTheMoon.slug}
+        variant="feature"
+        kicker={shootTheMoon.series.position.label.replace(" · Start Here", "")}
+        startHere
+        title={shootTheMoon.title}
+        hook={shootTheMoon.hook}
+        tropes={shootTheMoon.tropes}
+        cover={shootTheMoon.cover}
+        accentVar="var(--series-starlight-valley)"
+        accentTextVar="var(--series-starlight-valley-text)"
+      />
+    </div>
+  </section>
+
+  <section class="section series-shelf-section" id="reading-order" aria-labelledby="reading-order-heading">
+    <div class="wrap">
+      <p class="eyebrow">Reading Order</p>
+      <h2 class="series-shelf-section__heading" id="reading-order-heading">Every book, in order</h2>
+      <div class="series-shelf-section__order">
+        <ReadingOrder items={readingOrderItems} accentTextVar="var(--series-starlight-valley-text)" />
+      </div>
+      <div class="hshelf series-shelf series-shelf--roomy">
+        {books.map((b) => (
+          <BookCard
+            id={`${b.slug}-shelf`}
+            variant="shelf"
+            spotlight={b.series.position.isPrequel}
+            kicker={b.series.position.isPrequel ? b.series.position.label.replace(" · Start Here", "") : b.series.position.label}
+            startHere={b.series.position.isPrequel}
+            title={b.title}
+            coauthor={b.slug === "promise-you-the-moon" ? "Co-written with Lindsay Rochester" : null}
+            hook={b.hook}
+            tropes={b.tropes}
+            cover={b.cover}
+            accentVar="var(--series-starlight-valley)"
+            accentTextVar="var(--series-starlight-valley-text)"
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <SeriesSetting
+    eyebrow="The World of the Series"
+    lead="Starlight Valley"
+    paragraphs={[
+      "is the small mountain town at the heart of every book in this series — tucked into the Blue Ridge Mountains, where meddling grandmothers and big families make sure love finds its way, whether you're ready for it or not.",
+      "So far, two couples have found their way home here: a schoolteacher and the firefighter next door in Shoot the Moon, and a Marine and the woman he never stopped loving in Promise You the Moon.",
+    ]}
+    accentTextVar="var(--series-starlight-valley-text)"
+  />
+
+  <SeriesCoauthor
+    body="Every book in Love in Starlight Valley is co-written by Tiffany Noelle Chacon and Lindsay Rochester."
+    coauthorName={PEOPLE.lindsay.name}
+    coauthorUrl={PEOPLE.lindsay.url}
+    accentTextVar="var(--series-starlight-valley-text)"
+  />
+
+  <section class="section section--surface flagship-cta" id="flagship" aria-label={`The Next Chapter: ${promiseYouTheMoon.title}`}>
+    <div class="wrap">
+      <p class="eyebrow">The Next Chapter</p>
+      <BookCard
+        id={`${promiseYouTheMoon.slug}-flagship`}
+        variant="feature"
+        kicker={promiseYouTheMoon.series.position.label}
+        title={promiseYouTheMoon.title}
+        coauthor="Co-written with Lindsay Rochester"
+        hook={promiseYouTheMoon.hook}
+        tropes={promiseYouTheMoon.tropes}
+        cover={promiseYouTheMoon.cover}
+        accentVar="var(--series-starlight-valley)"
+        accentTextVar="var(--series-starlight-valley-text)"
+      />
+    </div>
+  </section>
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  .start-here-section__title,
+  .series-shelf-section__heading {
+    font-style: italic;
+    font-size: var(--step-3);
+    margin-bottom: var(--space-lg);
+  }
+  .series-shelf-section__order {
+    margin-bottom: var(--space-lg);
+  }
+  .series-shelf {
+    align-items: flex-start;
+  }
+  @media (min-width: 860px) {
+    .series-shelf.series-shelf--roomy {
+      overflow-x: auto;
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+    }
+  }
+</style>

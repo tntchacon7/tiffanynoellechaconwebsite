@@ -1,0 +1,132 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SeriesHero from "../../components/book/SeriesHero.astro";
+import BookCard from "../../components/book/BookCard.astro";
+import ReadingOrder from "../../components/book/ReadingOrder.astro";
+import SeriesSetting from "../../components/book/SeriesSetting.astro";
+import Newsletter from "../../components/shared/Newsletter.astro";
+import { getBooksInSeries, getSeriesBySlug } from "../../data/catalog.js";
+
+const series = getSeriesBySlug("equestrian-dreams");
+const books = getBooksInSeries("equestrian-dreams");
+const [offCourse, jump, fall, cowboy, soar] = books;
+
+const readingOrderItems = books.map((b) => ({
+  code: b.series.position.isPrequel ? "Prequel" : String(b.series.position.order).replace(/\.0$/, ""),
+  title: b.title,
+  href: `#${b.slug}-shelf`,
+}));
+---
+
+<BaseLayout title="Equestrian Dreams — Tiffany Noelle Chacon" currentSeries="equestrian-dreams">
+  <SeriesHero
+    eyebrow={`A Series by ${series.authors.map((a) => a.name).join(" & ")}`}
+    title={series.title}
+    pitch={series.tagline}
+    primaryCta={{ label: `Start with ${offCourse.title}`, href: "#start-here" }}
+    secondaryCta={{ label: `${jump.title} →`, href: "#jump-shelf" }}
+    entryCover={fall.cover}
+    flagshipCover={jump.cover}
+    thirdCover={soar.cover}
+    accentVar="var(--series-equestrian-dreams)"
+    accentTextVar="var(--series-equestrian-dreams-text)"
+    reveal="0px"
+  />
+
+  <section class="section start-here-section" id="start-here" aria-labelledby="start-here-title">
+    <div class="wrap">
+      <p class="eyebrow">Begin The Series</p>
+      <h2 class="start-here-section__title" id="start-here-title">Start here</h2>
+      <BookCard
+        id={offCourse.slug}
+        variant="feature"
+        kicker={offCourse.series.position.label.replace(" · Start Here", "")}
+        startHere
+        title={offCourse.title}
+        hook={offCourse.hook}
+        tropes={offCourse.tropes}
+        cover={offCourse.cover}
+        accentVar="var(--series-equestrian-dreams)"
+        accentTextVar="var(--series-equestrian-dreams-text)"
+      />
+    </div>
+  </section>
+
+  <section class="section series-shelf-section" id="reading-order" aria-labelledby="reading-order-heading">
+    <div class="wrap">
+      <p class="eyebrow">Reading Order</p>
+      <h2 class="series-shelf-section__heading" id="reading-order-heading">Every book, in order</h2>
+      <div class="series-shelf-section__order">
+        <ReadingOrder items={readingOrderItems} accentTextVar="var(--series-equestrian-dreams-text)" />
+      </div>
+      <div class="hshelf series-shelf series-shelf--roomy">
+        {books.map((b) => (
+          <BookCard
+            id={`${b.slug}-shelf`}
+            variant="shelf"
+            spotlight={b.series.position.isPrequel}
+            kicker={b.series.position.isPrequel ? b.series.position.label.replace(" · Start Here", "") : b.series.position.label}
+            startHere={b.series.position.isPrequel}
+            title={b.title}
+            hook={b.hook}
+            tropes={b.tropes}
+            badge={b.awards[0] ? `Winner — ${b.awards[0].name}` : null}
+            cover={b.cover}
+            accentVar="var(--series-equestrian-dreams)"
+            accentTextVar="var(--series-equestrian-dreams-text)"
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <SeriesSetting
+    eyebrow="The World of the Series"
+    lead="Show jumping"
+    paragraphs={[
+      "runs through every book in this series — drawn from Tiffany's own years as a national equestrian champion, read in order across all five books.",
+    ]}
+    accentTextVar="var(--series-equestrian-dreams-text)"
+  />
+
+  <section class="section section--surface flagship-cta" id="flagship" aria-label={`The Latest Chapter: ${soar.title}`}>
+    <div class="wrap">
+      <p class="eyebrow">The Latest Chapter</p>
+      <BookCard
+        id={`${soar.slug}-flagship`}
+        variant="feature"
+        kicker={soar.series.position.label}
+        title={soar.title}
+        hook={soar.hook}
+        tropes={soar.tropes}
+        cover={soar.cover}
+        accentVar="var(--series-equestrian-dreams)"
+        accentTextVar="var(--series-equestrian-dreams-text)"
+      />
+    </div>
+  </section>
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  .start-here-section__title,
+  .series-shelf-section__heading {
+    font-style: italic;
+    font-size: var(--step-3);
+    margin-bottom: var(--space-lg);
+  }
+  .series-shelf-section__order {
+    margin-bottom: var(--space-lg);
+  }
+  .series-shelf {
+    align-items: flex-start;
+  }
+  @media (min-width: 860px) {
+    .series-shelf.series-shelf--roomy {
+      overflow-x: auto;
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+    }
+  }
+</style>

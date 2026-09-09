@@ -1,0 +1,998 @@
+---
+// Recovered verbatim from the Homepage Artifact (12 sections, each its own
+// data-astro-cid — see Recovery-Inventory-Report.md Section 4: none of
+// these repeat elsewhere except Newsletter and the Reading Promise block,
+// which are shared components). This is the OLDEST of the 7 recovered
+// Artifacts, which matters for two known-stale spots, both left exactly as
+// recovered rather than "fixed" in this pass:
+//   1. Each series-block's "Full series page — coming soon" is a disabled
+//      placeholder — even though this same R2 pass builds those series
+//      pages. Wiring these up is a reasonable R3 candidate, not done here.
+//   2. The Reading Room guide rows are inert (not links) per the recovered
+//      dev comment: "individual guide slugs above (g.slug in
+//      src/data/catalog.js) are planned URLs, not live pages yet" — which
+//      also confirms the original catalog.js had a guides collection this
+//      rebuild does not attempt to reconstruct (out of scope for R2).
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Cover from "../components/shared/Cover.astro";
+import Newsletter from "../components/shared/Newsletter.astro";
+import { getBookBySlug, SERIES, getBooksInSeries } from "../data/catalog.js";
+
+const promiseYouTheMoon = getBookBySlug("promise-you-the-moon");
+const shootTheMoon = getBookBySlug("shoot-the-moon");
+const jump = getBookBySlug("jump");
+const comebackPlay = getBookBySlug("the-comeback-play");
+const christmasCourtship = getBookBySlug("a-christmas-courtship");
+const hollyJolly = getBookBySlug("a-holly-jolly-christmas-cubicle");
+
+const seriesData = SERIES.map((s) => ({ ...s, books: getBooksInSeries(s.slug) }));
+const seriesAccent = {
+  "love-in-starlight-valley": { accent: "var(--series-starlight-valley)", accentText: "var(--series-starlight-valley-text)" },
+  "sports-in-the-sunshine-state": { accent: "var(--series-sunshine-state)", accentText: "var(--series-sunshine-state-text)" },
+  "equestrian-dreams": { accent: "var(--series-equestrian-dreams)", accentText: "var(--series-equestrian-dreams-text)" },
+};
+
+const READING_ROOM_GUIDES = [
+  "What Is Clean Romance?",
+  "Best Clean Small-Town Romance Series",
+  "Best Clean Equestrian Romance Books",
+  "Best Clean Sports Romance Books",
+  "Best Clean Romantic Comedy Books",
+];
+---
+
+<BaseLayout
+  title="Tiffany Noelle Chacon — Clean Romance Author &amp; Podcaster"
+  description="Tiffany Noelle Chacon writes clean, kisses-only contemporary romance and rom-com — small-town sweethearts, sports romance, and equestrian love stories. No profanity, all the swoon."
+>
+  <section class="hero">
+    <div class="wrap wrap--wide hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">Tiffany Noelle Chacon</p>
+        <h1 class="hero__headline">
+          Romance worth rooting for. Kisses worth waiting for.
+          <svg class="hero__swoop" width="150" height="18" viewBox="0 0 150 18" fill="none" aria-hidden="true">
+            <path d="M2 13C36 2 92 1 128 10C136 12 142 11 148 6" stroke="var(--color-rose)" stroke-width="2.5" stroke-linecap="round"></path>
+          </svg>
+        </h1>
+        <p class="hero__body">
+          Clean, kisses-only contemporary romance and rom-com — banter that lands, chemistry you can feel, and
+          happily-ever-afters every time. No profanity, no explicit scenes, just the good stuff.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="/books/">Browse My Books</a>
+          <a class="btn btn--secondary" href="/find-your-next-read/">Find Your Next Read</a>
+        </div>
+      </div>
+      <div class="hero__media">
+        <span class="hero__field" aria-hidden="true"></span>
+        <span class="hero__frame" aria-hidden="true"></span>
+        <img
+          src="/images/author/homepage-hero-outdoor.jpg"
+          alt="Tiffany Noelle Chacon smiling outdoors, holding a stack of her clean romance novels, wearing a turquoise 'I'm a Clean Romance Author' T-shirt"
+          width="1400"
+          height="1866"
+          fetchpriority="high"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section featured" style={`--_accent: var(--series-starlight-valley); --_accent-text: var(--series-starlight-valley-text)`}>
+    <div class="wrap featured__grid">
+      <div class="featured__cover">
+        <Cover image={promiseYouTheMoon.cover.image} alt={promiseYouTheMoon.cover.alt} />
+      </div>
+      <div class="featured__copy">
+        <span class="featured__quotemark" aria-hidden="true">“</span>
+        <p class="eyebrow">Featured Release</p>
+        <p class="featured__series">Love in Starlight Valley · Book One</p>
+        <h2 class="featured__title">{promiseYouTheMoon.title}</h2>
+        <p class="featured__coauthor">with Lindsay Rochester</p>
+        <p class="featured__hook">{promiseYouTheMoon.hook}</p>
+        <ul class="featured__tropes">
+          {promiseYouTheMoon.readerHooks.map((t) => (
+            <li><span class="chip">{t}</span></li>
+          ))}
+        </ul>
+        <p class="featured__promise">Clean &amp; kisses only — no profanity, ever.</p>
+        <div class="featured__status">
+          <span class="badge">Upcoming · Preorder</span>
+          <span class="featured__date">Releases September 22, 2026</span>
+        </div>
+        <div class="featured__actions">
+          <a class="btn btn--primary" href={`/books/${promiseYouTheMoon.slug}/`}>Preorder Now</a>
+          <a class="btn btn--quiet" href={`/books/${promiseYouTheMoon.slug}/`}>
+            Learn More <span class="btn-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight promise">
+    <span class="promise__bgword" aria-hidden="true">Promise</span>
+    <div class="wrap">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Tiffany's Reading Promise</p>
+        <h2>What you can always count on</h2>
+      </div>
+      <ul class="promise__list">
+        <li><span class="promise__mark" aria-hidden="true"></span>Laugh-out-loud banter</li>
+        <li><span class="promise__mark" aria-hidden="true"></span>Swoony, slow-burn chemistry</li>
+        <li><span class="promise__mark" aria-hidden="true"></span>Kisses only — always clean</li>
+        <li><span class="promise__mark" aria-hidden="true"></span>Big feelings, bigger hearts</li>
+        <li><span class="promise__mark" aria-hidden="true"></span>Communities worth moving to</li>
+        <li><span class="promise__mark" aria-hidden="true"></span>Happily-ever-afters, guaranteed</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section browse-series" id="free-starter-reads" aria-labelledby="browse-series-heading">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">The Catalog</p>
+        <h2 id="browse-series-heading">Browse Tiffany's Series</h2>
+      </div>
+      <div class="series-list">
+        {seriesData.map((s) => {
+          const acc = seriesAccent[s.slug];
+          const startBook = s.books.find((b) => b.series.position.isPrequel) ?? s.books[0];
+          return (
+            <article class="series-block" id={s.slug} style={`--_accent: ${acc.accent}; --_accent-text: ${acc.accentText}`}>
+              <div class="series-block__intro">
+                <p class="series-block__eyebrow">Series</p>
+                <h3 class="series-block__name">{s.title}</h3>
+                <p class="series-block__pitch">{s.tagline}</p>
+                {s.authors.length > 1 && <p class="series-block__coauthor">Co-written with {s.authors[1].name}</p>}
+                <p class="series-block__start"><span class="badge">Start with {startBook.title}</span></p>
+                <span class="btn btn--quiet series-block__cta" aria-disabled="true">Full series page — coming soon</span>
+              </div>
+              <ul class="series-block__shelf hshelf">
+                {s.books.map((b) => (
+                  <li>
+                    <Cover image={b.cover.image} alt={b.cover.alt} placeholderTitle={b.title} accentVar={acc.accent} />
+                    <p class="series-block__book-label">{b.title}</p>
+                    <p class="series-block__book-position">{b.series.position.label.replace(" · Start Here", "")}</p>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight section--surface other-books" id="other-books">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">More From Tiffany</p>
+        <h2>Other Books &amp; Collaborations</h2>
+        <p class="other-books__intro">Standalone novellas written for multi-author collections and podcast projects.</p>
+      </div>
+      <ul class="other-books__grid">
+        {[comebackPlay, christmasCourtship, hollyJolly].map((b) => (
+          <li class="other-books__card">
+            <Cover image={b.cover.image} alt={b.cover.alt} placeholderTitle={b.title} accentVar="var(--color-gold)" />
+            <div>
+              <h3 class="other-books__title">{b.title}</h3>
+              <p class="other-books__context">{b.collaboration}</p>
+              {b.awards[0] && <p class="badge">Winner — {b.awards[0].name}</p>}
+              <p class="other-books__hook">{b.hook}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--tight discovery">
+    <div class="wrap">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Not Sure Where to Start?</p>
+        <h2>Which should I read first?</h2>
+        <p class="discovery__note">
+          A quick preview of what's coming to the full Find Your Next Read tool — for now, these jump you straight to
+          the shelf that fits.
+        </p>
+      </div>
+      <ul class="discovery__grid">
+        {[
+          { prompt: "Want sports and banter?", answer: "Sports in the Sunshine State", href: "#sports-in-the-sunshine-state" },
+          { prompt: "Want small-town charm?", answer: "Love in Starlight Valley", href: "#love-in-starlight-valley" },
+          { prompt: "Want horses and ambition?", answer: "Equestrian Dreams", href: "#equestrian-dreams" },
+          { prompt: "Want a Christmas read?", answer: "A Christmas Court(ship)", href: "#other-books" },
+          { prompt: "Want to start free?", answer: "Pucks & Pranks or Shoot the Moon", href: "#free-starter-reads" },
+        ].map((row) => (
+          <li>
+            <a class="discovery__card" href={row.href}>
+              <span class="discovery__prompt">{row.prompt}</span>
+              <span class="discovery__answer">{row.answer} <span aria-hidden="true">→</span></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--surface reading-room">
+    <span class="reading-room__bgword" aria-hidden="true">Beyond</span>
+    <div class="wrap reading-room__grid">
+      <div class="reading-room__intro">
+        <p class="eyebrow">Beyond Tiffany's Catalog</p>
+        <h2>The Clean Romance Reading Room</h2>
+        <p>
+          A growing library of guides for finding your next clean read — Tiffany's own books included, alongside
+          other authors writing kisses-only romance worth knowing about.
+        </p>
+        <a class="btn btn--secondary" href="/clean-romance/">Explore the Reading Room</a>
+      </div>
+      <ul class="reading-room__guides">
+        {READING_ROOM_GUIDES.map((title, i) => (
+          <li>
+            <span class="reading-room__row" aria-disabled="true">
+              <span class="reading-room__index">{String(i + 1).padStart(2, "0")}</span>
+              <span class="reading-room__title">{title}</span>
+              <span class="chip chip--muted">Coming soon</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+      <!--
+        NEEDS INPUT / note: individual guide slugs above (g.slug in
+        src/data/catalog.js) are planned URLs, not live pages yet — kept
+        as inert rows rather than links so nothing 404s before the
+        Reading Room articles are actually written (Phase 2D scope).
+      -->
+    </div>
+  </section>
+
+  <section class="section starlight" aria-labelledby="starlight-heading">
+    <span class="starlight__star starlight__star--1" aria-hidden="true"></span>
+    <span class="starlight__star starlight__star--2" aria-hidden="true"></span>
+    <span class="starlight__star starlight__star--3" aria-hidden="true"></span>
+    <div class="wrap starlight__content">
+      <p class="eyebrow starlight__eyebrow">A Series Feature</p>
+      <h2 class="starlight__title" id="starlight-heading">Love in Starlight Valley</h2>
+      <p class="starlight__pitch">
+        A small mountain town under a wide night sky, where meddling grandmothers, big families, and a little bit of
+        fate keep bringing the right two people together. Co-written with Lindsay Rochester.
+      </p>
+      <div class="starlight__pair">
+        <div class="starlight__book">
+          <p class="badge">Start free</p>
+          <h3>{shootTheMoon.title}</h3>
+          <p>{shootTheMoon.hook}</p>
+        </div>
+        <div class="starlight__divider" aria-hidden="true"></div>
+        <div class="starlight__book">
+          <p class="badge">Book One · Preorder</p>
+          <h3>{promiseYouTheMoon.title}</h3>
+          <p>{promiseYouTheMoon.hook}</p>
+        </div>
+      </div>
+      <a class="btn btn--secondary starlight__cta" href="#love-in-starlight-valley">See the Full Series</a>
+    </div>
+  </section>
+
+  <section class="section section--tight section--surface podcast">
+    <div class="wrap podcast__grid">
+      <div class="podcast__art" role="img" aria-label="The Clean Romance Podcast cover art placeholder">
+        <span class="podcast__wave" aria-hidden="true"></span>
+        <span class="podcast__mark">The Clean<br />Romance<br />Podcast</span>
+      </div>
+      <div class="podcast__copy">
+        <p class="eyebrow">Tiffany's Podcast</p>
+        <h2>The Clean Romance Podcast</h2>
+        <p>
+          Tiffany co-hosts The Clean Romance Podcast with fellow author Sarah Hickner — honest conversations about
+          writing, reading, and championing kisses-only romance.
+        </p>
+        <div class="podcast__episode card">
+          <p class="eyebrow">Latest Episode</p>
+          <p class="podcast__episode-placeholder">Episode details coming soon — pending current episode info.</p>
+        </div>
+        <a class="btn btn--secondary" href="http://thecleanromancepodcast.com/" target="_blank" rel="noopener noreferrer">Listen to the Podcast</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section meet">
+    <div class="wrap meet__grid">
+      <div class="meet__media">
+        <img src="/images/author/headshot-secondary.jpg" alt="Portrait of author Tiffany Noelle Chacon smiling" width="600" height="900" loading="lazy" />
+      </div>
+      <div class="meet__copy">
+        <p class="eyebrow">Meet Tiffany</p>
+        <h2>Hi, I'm Tiffany.</h2>
+        <p>
+          I write clean, kisses-only contemporary romance and rom-com — married to my middle-school sweetheart, a
+          five-time national equestrian champion, and a homeschooling mom of two sons in Tennessee. I hold an MFA in
+          Creative Writing from the University of Tampa, and when I'm not writing I'm probably recording an episode
+          of The Clean Romance Podcast.
+        </p>
+        <a class="btn btn--secondary" href="/about/">More About Tiffany</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight section--surface awards">
+    <div class="wrap">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Editorial Recognition</p>
+      </div>
+      <ul class="awards__list">
+        <li><span class="badge">Winner — {jump.awards[0].name}</span><span class="awards__book">{jump.title}</span></li>
+        <li><span class="badge">Winner — {christmasCourtship.awards[0].name}</span><span class="awards__book">{christmasCourtship.title}</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: var(--space-xl);
+    padding-bottom: var(--space-2xl);
+    overflow: hidden;
+  }
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .hero__copy {
+    max-width: 36rem;
+  }
+  .hero__headline {
+    position: relative;
+    font-style: italic;
+    font-size: var(--step-5);
+    margin-bottom: var(--space-md);
+    display: inline-block;
+  }
+  .hero__swoop {
+    display: block;
+    margin-top: 2px;
+    margin-left: auto;
+    width: 9rem;
+    height: auto;
+  }
+  .hero__body {
+    font-size: var(--step-1);
+    color: var(--color-muted);
+    max-width: 42ch;
+    margin-bottom: var(--space-lg);
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  .hero__media {
+    position: relative;
+  }
+  .hero__media img {
+    border-radius: var(--radius-lg);
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: 3 / 4;
+  }
+  .hero__field {
+    position: absolute;
+    z-index: 1;
+    left: -1.5rem;
+    bottom: -1.5rem;
+    width: 65%;
+    height: 55%;
+    background: var(--color-tiffany);
+    opacity: 0.16;
+    border-radius: var(--radius-lg);
+  }
+  .hero__frame {
+    position: absolute;
+    z-index: 1;
+    right: -1rem;
+    top: -1rem;
+    width: 40%;
+    height: 32%;
+    border: 1px solid var(--color-gold);
+    opacity: 0.5;
+    border-radius: var(--radius-md);
+  }
+  @media (max-width: 900px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+    }
+    .hero__copy {
+      max-width: none;
+      order: 1;
+    }
+    .hero__media {
+      order: 0;
+      max-width: 22rem;
+      margin-inline: auto;
+    }
+    .hero__headline {
+      font-size: var(--step-4);
+    }
+    .hero {
+      padding-top: var(--space-lg);
+    }
+    .hero__swoop {
+      margin-inline: auto;
+    }
+  }
+
+  .featured {
+    background: var(--color-surface);
+    overflow: hidden;
+  }
+  .featured__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+  .featured__cover {
+    max-width: 15rem;
+  }
+  .featured__copy {
+    position: relative;
+  }
+  .featured__quotemark {
+    position: absolute;
+    top: -3.5rem;
+    left: -1.25rem;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 11rem;
+    line-height: 1;
+    color: var(--_accent);
+    opacity: 0.14;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .featured__copy > :global(:not(.featured__quotemark)) {
+    position: relative;
+    z-index: 1;
+  }
+  .featured__series {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    color: var(--_accent-text);
+    margin-bottom: var(--space-xs);
+  }
+  .featured__title {
+    font-style: italic;
+    font-size: var(--step-3);
+    margin-bottom: var(--space-2xs);
+  }
+  .featured__coauthor {
+    color: var(--color-muted);
+    font-size: var(--step--1);
+    margin-bottom: var(--space-md);
+  }
+  .featured__hook {
+    max-width: 56ch;
+    margin-bottom: var(--space-md);
+  }
+  .featured__tropes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-bottom: var(--space-md);
+  }
+  .featured__tropes .chip {
+    color: var(--_accent-text);
+  }
+  .featured__promise {
+    font-size: var(--step--1);
+    color: var(--color-muted);
+    margin-bottom: var(--space-md);
+  }
+  .featured__status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+  }
+  .featured__date {
+    font-size: var(--step--1);
+    color: var(--color-muted);
+  }
+  .featured__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md);
+  }
+  @media (max-width: 780px) {
+    .featured__grid {
+      grid-template-columns: 1fr;
+    }
+    .featured__cover {
+      max-width: 11rem;
+      margin-inline: auto;
+    }
+  }
+
+  /* [ARTIFACT]: this section shares the exact same cid (data-astro-cid-6byozbff)
+     as the About page's "Reading Promise" section — confirmed by re-extracting
+     the literal CSS directly from the homepage Artifact. An earlier pass wrote
+     a different (grid/centered) rule set here by mistake; corrected to the
+     verbatim flex-row/left-aligned version that both pages actually use. */
+  .promise {
+    position: relative;
+    overflow: hidden;
+  }
+  .promise__bgword {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(6rem, 22vw, 15rem);
+    color: var(--color-rose-text);
+    opacity: 0.06;
+    white-space: nowrap;
+    line-height: 1;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .promise > .wrap {
+    position: relative;
+    z-index: 1;
+  }
+  .promise__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--space-md) var(--space-lg);
+    max-width: 56rem;
+    margin-inline: auto;
+  }
+  .promise__list li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-1);
+  }
+  .promise__mark {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-rose);
+    flex-shrink: 0;
+    transform: translateY(-2px);
+  }
+
+  .series-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+  }
+  .series-block {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+    gap: var(--space-xl);
+    padding-top: var(--space-xl);
+    border-top: var(--border-hairline);
+  }
+  .series-block:first-child {
+    border-top: none;
+    padding-top: var(--space-lg);
+  }
+  .series-block__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--_accent-text);
+    margin-bottom: var(--space-2xs);
+  }
+  .series-block__name {
+    font-style: italic;
+    font-size: var(--step-2);
+    margin-bottom: var(--space-sm);
+  }
+  .series-block__pitch {
+    color: var(--color-muted);
+    max-width: 34ch;
+    margin-bottom: var(--space-sm);
+  }
+  .series-block__coauthor {
+    font-size: var(--step--1);
+    color: var(--color-muted);
+    margin-bottom: var(--space-md);
+  }
+  .series-block__start {
+    margin-bottom: var(--space-sm);
+  }
+  .series-block__start :global(.badge) {
+    color: var(--_accent-text);
+  }
+  .series-block__start :global(.badge):before {
+    background: var(--_accent);
+  }
+  .series-block__cta {
+    cursor: default;
+    opacity: 0.75;
+  }
+  .series-block__shelf li {
+    width: 9.5rem;
+  }
+  .series-block__book-label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-0);
+    margin-top: var(--space-xs);
+  }
+  .series-block__book-position {
+    font-size: var(--step--1);
+    color: var(--color-muted);
+  }
+  @media (max-width: 900px) {
+    .series-block {
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+    }
+  }
+
+  .other-books__intro {
+    color: var(--color-muted);
+    max-width: 40ch;
+    margin-top: var(--space-2xs);
+  }
+  .other-books__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-lg);
+  }
+  .other-books__card {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: var(--space-sm);
+  }
+  .other-books__title {
+    font-style: italic;
+    font-size: var(--step-1);
+    margin-bottom: var(--space-3xs);
+  }
+  .other-books__context {
+    font-size: var(--step--1);
+    color: var(--color-muted);
+    margin-bottom: var(--space-xs);
+  }
+  .other-books__hook {
+    font-size: var(--step--1);
+    margin-top: var(--space-xs);
+  }
+
+  .discovery__note {
+    color: var(--color-muted);
+    max-width: 42ch;
+    margin-inline: auto;
+  }
+  .discovery__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: var(--space-md);
+  }
+  .discovery__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-md);
+    height: 100%;
+    border: var(--border-hairline);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--color-ink);
+    transition: border-color var(--duration-fast) var(--ease-editorial), background-color var(--duration-fast) var(--ease-editorial);
+  }
+  .discovery__card:hover {
+    border-color: var(--color-tiffany-text);
+    background: var(--color-surface);
+  }
+  .discovery__prompt {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-1);
+  }
+  .discovery__answer {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--color-tiffany-text);
+  }
+
+  .reading-room {
+    position: relative;
+    overflow: hidden;
+  }
+  .reading-room__bgword {
+    position: absolute;
+    top: 50%;
+    left: -0.5rem;
+    transform: translateY(-50%);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(6rem, 20vw, 13rem);
+    line-height: 1;
+    color: var(--color-tiffany-text);
+    opacity: 0.05;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .reading-room__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+  .reading-room__intro p {
+    color: var(--color-muted);
+    margin-block: var(--space-sm) var(--space-md);
+    max-width: 32ch;
+  }
+  .reading-room__guides {
+    display: flex;
+    flex-direction: column;
+  }
+  .reading-room__guides li {
+    border-bottom: var(--border-hairline);
+  }
+  .reading-room__guides li:first-child {
+    border-top: var(--border-hairline);
+  }
+  .reading-room__row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    padding-block: var(--space-md);
+    color: var(--color-ink);
+  }
+  .reading-room__index {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--color-gold-text);
+  }
+  .reading-room__title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-1);
+    flex: 1;
+  }
+  @media (max-width: 780px) {
+    .reading-room__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .starlight {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--color-ink) 0%, #1b2c2e 100%);
+    color: var(--color-bg);
+    border-radius: var(--radius-lg);
+    margin-inline: var(--gutter);
+    padding-inline: var(--gutter);
+  }
+  .starlight__content {
+    position: relative;
+    z-index: 1;
+    max-width: 46rem;
+  }
+  .starlight__eyebrow {
+    color: var(--color-tiffany);
+  }
+  .starlight__title {
+    font-style: italic;
+    font-size: var(--step-4);
+    color: var(--color-bg);
+    margin-bottom: var(--space-md);
+  }
+  .starlight__pitch {
+    color: #c9d6d3;
+    max-width: 48ch;
+    margin-bottom: var(--space-xl);
+  }
+  .starlight__pair {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--space-lg);
+    align-items: start;
+    margin-bottom: var(--space-lg);
+  }
+  .starlight__book h3 {
+    font-style: italic;
+    color: var(--color-bg);
+    font-size: var(--step-1);
+    margin-block: var(--space-2xs);
+  }
+  .starlight__book p:not(:global(.badge)) {
+    color: #c9d6d3;
+    font-size: var(--step--1);
+    max-width: 34ch;
+  }
+  .starlight__book :global(.badge) {
+    color: var(--color-tiffany);
+  }
+  .starlight__book :global(.badge):before {
+    background: var(--color-tiffany);
+  }
+  .starlight__divider {
+    width: 1px;
+    align-self: stretch;
+    background: #ffffff26;
+  }
+  .starlight__cta {
+    border-color: var(--color-bg);
+    color: var(--color-bg);
+  }
+  .starlight__cta:hover {
+    background: var(--color-bg);
+    color: var(--color-ink);
+  }
+  .starlight__star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--color-bg);
+    opacity: 0.55;
+  }
+  .starlight__star--1 {
+    top: 12%;
+    right: 18%;
+  }
+  .starlight__star--2 {
+    top: 32%;
+    right: 8%;
+    width: 2px;
+    height: 2px;
+  }
+  .starlight__star--3 {
+    top: 60%;
+    right: 24%;
+    width: 4px;
+    height: 4px;
+    opacity: 0.35;
+  }
+  @media (min-width: 1200px) {
+    .starlight {
+      margin-inline: auto;
+      max-width: calc(var(--content-width-wide) + 2 * var(--gutter));
+    }
+  }
+  @media (max-width: 780px) {
+    .starlight__pair {
+      grid-template-columns: 1fr;
+    }
+    .starlight__divider {
+      width: 100%;
+      height: 1px;
+    }
+  }
+
+  .podcast__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .podcast__art {
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(150deg, var(--color-tiffany) 0%, var(--color-ink) 140%);
+    color: var(--color-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-lg);
+  }
+  .podcast__mark {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-1);
+    text-align: center;
+    line-height: 1.25;
+    position: relative;
+    z-index: 1;
+  }
+  .podcast__wave {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0, rgba(255, 255, 255, 0.12) 2px, transparent 2px, transparent 10px);
+    opacity: 0.5;
+  }
+  .podcast__copy p:not(:global(.eyebrow)):not(.podcast__episode-placeholder) {
+    color: var(--color-muted);
+    max-width: 46ch;
+    margin-block: var(--space-sm) var(--space-md);
+  }
+  .podcast__episode {
+    margin-bottom: var(--space-md);
+    max-width: 30rem;
+  }
+  .podcast__episode-placeholder {
+    color: var(--color-muted);
+    font-size: var(--step--1);
+  }
+  @media (max-width: 780px) {
+    .podcast__grid {
+      grid-template-columns: 1fr;
+    }
+    .podcast__art {
+      max-width: 12rem;
+      margin-inline: auto;
+    }
+  }
+
+  .meet__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .meet__media img {
+    border-radius: var(--radius-lg);
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    width: 100%;
+    height: auto;
+  }
+  .meet__copy p {
+    color: var(--color-muted);
+    max-width: 56ch;
+    margin-block: var(--space-sm) var(--space-md);
+  }
+  @media (max-width: 780px) {
+    .meet__grid {
+      grid-template-columns: 1fr;
+    }
+    .meet__media {
+      max-width: 10rem;
+      margin-inline: auto;
+    }
+  }
+
+  .awards__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-xl);
+  }
+  .awards__list li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2xs);
+    text-align: center;
+    max-width: 20rem;
+  }
+  .awards__book {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-1);
+  }
+</style>

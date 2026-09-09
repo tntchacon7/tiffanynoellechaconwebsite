@@ -1,0 +1,53 @@
+---
+// Recovered verbatim (data-astro-cid-c525fm65) — "The World of the Series."
+export interface Props {
+  eyebrow: string; // e.g. "The Sunshine State Setting"
+  lead: string; // e.g. "Florida"
+  paragraphs: string[];
+  accentTextVar: string;
+}
+const { eyebrow, lead, paragraphs, accentTextVar } = Astro.props;
+---
+
+<section class="section section--surface series-setting" aria-labelledby="setting-heading" style={`--_accent-text: ${accentTextVar}`}>
+  <div class="wrap wrap--narrow">
+    <p class="eyebrow" id="setting-heading">{eyebrow}</p>
+    <div class="series-setting__body">
+      <span class="series-setting__lead" aria-hidden="true">{lead}</span>
+      {paragraphs.map((p, i) => (
+        <p class={`series-setting__p${i === 0 ? " series-setting__p--first" : ""}`}>{p}</p>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .series-setting__body {
+    position: relative;
+  }
+  .series-setting__lead {
+    float: left;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 5.5rem;
+    line-height: 0.8;
+    color: var(--_accent-text);
+    margin-right: var(--space-sm);
+    margin-top: 0.25rem;
+  }
+  .series-setting__p {
+    font-size: var(--step-1);
+    color: var(--color-ink);
+    max-width: 60ch;
+    margin-bottom: var(--space-md);
+  }
+  .series-setting__p:last-child {
+    margin-bottom: 0;
+  }
+  @media (max-width: 640px) {
+    .series-setting__lead {
+      font-size: 3.75rem;
+    }
+  }
+</style>

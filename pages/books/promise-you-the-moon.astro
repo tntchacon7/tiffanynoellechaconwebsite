@@ -1,0 +1,468 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BookCard from "../../components/book/BookCard.astro";
+import SeriesCoauthor from "../../components/book/SeriesCoauthor.astro";
+import Newsletter from "../../components/shared/Newsletter.astro";
+import { getBookBySlug, getSeriesBySlug } from "../../data/catalog.js";
+
+const book = getBookBySlug("promise-you-the-moon");
+const series = getSeriesBySlug(book.series.slug);
+const shootTheMoon = getBookBySlug("shoot-the-moon");
+const coauthor = book.authors.find((a) => a.slug !== "tiffany-noelle-chacon");
+
+const releaseDateFormatted = book.release.date
+  ? new Date(`${book.release.date}T00:00:00Z`).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "UTC",
+    })
+  : null;
+
+// [ARTIFACT]: the only recovered retail entry for this book is a disabled
+// "Preorder Now — link coming soon" placeholder — no real destination was
+// recovered, so none is fabricated here.
+const preorder = book.retail.find((r) => r.retailer === "preorder");
+
+const contentPromiseLabel =
+  book.content.cleanKissesOnly && book.content.noProfanity ? "Kisses only, no profanity" : null; // [ARTIFACT]
+---
+
+<BaseLayout
+  title={`${book.title} — Tiffany Noelle Chacon`}
+  description={book.hook}
+  currentSeries={book.series.slug}
+>
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <ol class="wrap wrap--wide breadcrumbs__list">
+      <li class="breadcrumbs__item">
+        <a href="/">Home</a>
+        <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+      </li>
+      <li class="breadcrumbs__item">
+        <a href="/books/">My Books</a>
+        <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+      </li>
+      <li class="breadcrumbs__item">
+        <a href={`/series/${series.slug}/`}>{series.title}</a>
+        <span class="breadcrumbs__sep" aria-hidden="true">/</span>
+      </li>
+      <li class="breadcrumbs__item">
+        <span aria-current="page">{book.title}</span>
+      </li>
+    </ol>
+  </nav>
+
+  <section class="book-hero" style={`--_accent-text: var(${series.accentColorToken}-text)`}>
+    <div class="wrap wrap--wide">
+      <div class="book-hero__grid">
+        <div class="book-hero__copy">
+          <p class="eyebrow">
+            <a href={`/series/${series.slug}/`}>{series.title}</a> — {book.series.position.label}
+          </p>
+          <h1 class="book-hero__title">{book.title}</h1>
+          <p class="book-hero__byline">
+            By {book.authors[0].name}{" "}
+            &amp;{" "}
+            {coauthor?.url ? (
+              <a class="book-hero__byline-link" href={coauthor.url} target="_blank" rel="noopener noreferrer">
+                {coauthor.name}
+              </a>
+            ) : (
+              coauthor?.name
+            )}
+          </p>
+          <p class="book-hero__genre">A clean, kisses-only small-town romance.</p>
+          {releaseDateFormatted && (
+            <p class="badge book-hero__badge">Preorder · Releases {releaseDateFormatted}</p>
+          )}
+          <div class="book-hero__actions">
+            <div class="book-cta">
+              {preorder?.url ? (
+                <a class="btn btn--secondary" href={preorder.url}>Preorder Now</a>
+              ) : (
+                <span class="btn btn--secondary" aria-disabled="true">Preorder Now — link coming soon</span>
+              )}
+            </div>
+          </div>
+        </div>
+        <div class="book-hero__media">
+          <div class="book-hero__cover">
+            <div class="cover">
+              <img src={book.cover.image} alt={book.cover.alt} width="480" height="768" loading="eager" fetchpriority="high" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight reader-hooks" aria-labelledby="reader-hooks-heading">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">Reader Hooks</p>
+      <h2 class="reader-hooks__heading" id="reader-hooks-heading">Why You'll Love This Book</h2>
+      <ul class="reader-hooks__list">
+        {(book.readerHooks ?? []).map((h) => (
+          <li>
+            <span class="reader-hooks__mark" aria-hidden="true" style={`background: var(${series.accentColorToken})`}></span>
+            {h}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--tight section--surface book-promise" aria-label="Content promise">
+    <div class="wrap wrap--narrow book-promise__inner">
+      <hr class="rule--accent" />
+      <p class="book-promise__statement">Kisses only. No explicit scenes. Ever.</p>
+    </div>
+  </section>
+
+  <section class="section book-description" aria-labelledby="book-description-heading">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">The Story</p>
+      <h2 class="visually-hidden" id="book-description-heading">About the Book</h2>
+      <p class="book-description__hook">{book.hook}</p>
+      {book.blurb && (
+        <div class="book-description__blurb">
+          {book.blurb.split("\n\n").map((para) => <p>{para}</p>)}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section series-context" aria-labelledby="series-context-heading" style={`--_accent-text: var(${series.accentColorToken}-text)`}>
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">Part of the Series</p>
+      <h2 class="series-context__heading" id="series-context-heading">{series.title}</h2>
+      <p class="series-context__line">
+        <em>{book.title}</em> is {book.series.position.label} in {series.title}. {series.tagline}
+      </p>
+      <div class="series-context__preceding">
+        <p class="series-context__preceding-note">
+          <em>{shootTheMoon.title}</em> comes before <em>{book.title}</em> in reading order.
+        </p>
+        <BookCard
+          id={shootTheMoon.slug}
+          variant="shelf"
+          kicker={shootTheMoon.series.position.label.replace(" · Start Here", "")}
+          startHere
+          title={shootTheMoon.title}
+          hook={shootTheMoon.hook}
+          tropes={shootTheMoon.tropes}
+          cover={shootTheMoon.cover}
+          accentVar={`var(${series.accentColorToken})`}
+          accentTextVar={`var(${series.accentColorToken}-text)`}
+          href={`/series/${series.slug}/#start-here`}
+        />
+      </div>
+      <a class="btn btn--secondary series-context__cta" href={`/series/${series.slug}/`}>See the Full Series →</a>
+    </div>
+  </section>
+
+  {coauthor && (
+    <SeriesCoauthor
+      eyebrow="A Two-Author Book"
+      body={`${book.title} is co-written by ${book.authors[0].name} and ${coauthor.name}.`}
+      coauthorName={coauthor.name}
+      coauthorUrl={coauthor.url}
+      accentTextVar={`var(${series.accentColorToken}-text)`}
+    />
+  )}
+
+  <section class="section section--tight section--surface book-details" aria-labelledby="book-details-heading">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">At a Glance</p>
+      <h2 class="visually-hidden" id="book-details-heading">Book Details</h2>
+      <dl class="book-details__list">
+        <div class="book-details__row">
+          <dt>Series</dt>
+          <dd><a href={`/series/${series.slug}/`}>{series.title}</a></dd>
+        </div>
+        <div class="book-details__row">
+          <dt>Series Position</dt>
+          <dd>{book.series.position.label}</dd>
+        </div>
+        {releaseDateFormatted && (
+          <div class="book-details__row">
+            <dt>Release Date</dt>
+            <dd>{releaseDateFormatted}</dd>
+          </div>
+        )}
+        {coauthor && (
+          <div class="book-details__row">
+            <dt>Co-Author</dt>
+            <dd>
+              {coauthor.url ? <a href={coauthor.url}>{coauthor.name}</a> : coauthor.name}
+            </dd>
+          </div>
+        )}
+        {book.tropes.length > 0 && (
+          <div class="book-details__row">
+            <dt>Tropes</dt>
+            <dd>{book.tropes.join(", ")}</dd>
+          </div>
+        )}
+        {book.setting && (
+          <div class="book-details__row">
+            <dt>Setting</dt>
+            <dd>{book.setting}</dd>
+          </div>
+        )}
+        {contentPromiseLabel && (
+          <div class="book-details__row">
+            <dt>Content Promise</dt>
+            <dd>{contentPromiseLabel}</dd>
+          </div>
+        )}
+      </dl>
+    </div>
+  </section>
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  .breadcrumbs {
+    padding-top: var(--space-md);
+  }
+  .breadcrumbs__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3xs);
+  }
+  .breadcrumbs__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3xs);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--color-muted);
+  }
+  .breadcrumbs__item a {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+  .breadcrumbs__item a:hover {
+    color: var(--color-tiffany-text);
+    text-decoration: underline;
+  }
+  .breadcrumbs__item [aria-current="page"] {
+    color: var(--color-ink);
+  }
+  .breadcrumbs__sep {
+    opacity: 0.5;
+  }
+
+  .book-hero {
+    padding-top: var(--space-lg);
+    padding-bottom: var(--space-2xl);
+  }
+  .book-hero__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .book-hero__title {
+    font-style: italic;
+    font-size: var(--step-5);
+    margin-top: var(--space-xs);
+    margin-bottom: var(--space-sm);
+  }
+  .book-hero__byline {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--color-ink);
+    margin-bottom: var(--space-xs);
+  }
+  .book-hero__byline-link {
+    color: var(--_accent-text);
+  }
+  .book-hero__genre {
+    font-size: var(--step-0);
+    color: var(--color-muted);
+    max-width: 40ch;
+    margin-bottom: var(--space-md);
+  }
+  .book-hero__badge {
+    margin-bottom: var(--space-lg);
+  }
+  .book-hero__media {
+    display: flex;
+    justify-content: center;
+  }
+  .book-hero__cover {
+    width: 20rem;
+  }
+  .book-hero__cover .cover {
+    box-shadow: var(--shadow-md);
+  }
+  @media (max-width: 900px) {
+    .book-hero__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+    }
+    .book-hero__media {
+      order: -1;
+    }
+    .book-hero__cover {
+      width: 16rem;
+    }
+    .book-hero__title {
+      font-size: var(--step-4);
+    }
+  }
+  @media (max-width: 480px) {
+    .book-hero__cover {
+      width: 13rem;
+    }
+  }
+
+  .book-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2xs);
+  }
+  .book-cta [aria-disabled="true"] {
+    cursor: default;
+  }
+  .book-cta [aria-disabled="true"]:hover {
+    background: transparent;
+    color: var(--color-ink);
+  }
+
+  .reader-hooks__heading {
+    font-style: italic;
+    font-size: var(--step-3);
+    margin-bottom: var(--space-md);
+  }
+  .reader-hooks__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  .reader-hooks__list li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    color: var(--color-ink);
+  }
+  .reader-hooks__mark {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transform: translateY(-2px);
+  }
+
+  .book-promise__inner {
+    text-align: center;
+  }
+  .book-promise__inner .rule--accent {
+    margin-inline: auto;
+    margin-bottom: var(--space-sm);
+  }
+  .book-promise__statement {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    color: var(--color-ink);
+  }
+
+  .book-description__hook {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-1);
+    line-height: var(--leading-snug);
+    max-width: 48ch;
+    color: var(--color-muted);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-lg);
+    border-bottom: var(--border-hairline);
+  }
+  .book-description__blurb {
+    max-width: 60ch;
+  }
+  .book-description__blurb p {
+    font-size: var(--step-1);
+    line-height: var(--leading-normal);
+    color: var(--color-ink);
+    margin-bottom: var(--space-md);
+  }
+  .book-description__blurb p:last-child {
+    margin-bottom: 0;
+  }
+
+  .series-context__heading {
+    font-style: italic;
+    font-size: var(--step-3);
+    margin-bottom: var(--space-md);
+  }
+  .series-context__line {
+    font-size: var(--step-1);
+    color: var(--color-muted);
+    max-width: 56ch;
+  }
+  .series-context__line em {
+    font-style: italic;
+    color: var(--color-ink);
+  }
+  .series-context__preceding {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: var(--border-hairline);
+  }
+  .series-context__preceding-note {
+    color: var(--color-muted);
+    margin-bottom: var(--space-md);
+  }
+  .series-context__preceding-note em {
+    font-style: italic;
+    color: var(--color-ink);
+  }
+  .series-context__preceding :global(.book-card--shelf) {
+    width: 16rem;
+  }
+  .series-context__cta {
+    margin-top: var(--space-xl);
+  }
+
+  .book-details__list {
+    display: flex;
+    flex-direction: column;
+  }
+  .book-details__row {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    gap: var(--space-md);
+    padding-block: var(--space-sm);
+    border-bottom: var(--border-hairline);
+  }
+  .book-details__row:first-child {
+    border-top: var(--border-hairline);
+  }
+  .book-details__row dt {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .book-details__row dd {
+    margin: 0;
+    color: var(--color-ink);
+  }
+  @media (max-width: 560px) {
+    .book-details__row {
+      grid-template-columns: 1fr;
+      gap: var(--space-3xs);
+    }
+  }
+</style>

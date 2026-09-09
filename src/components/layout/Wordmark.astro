@@ -1,0 +1,86 @@
+---
+// Recovered verbatim from all 7 Artifacts (data-astro-cid-hhuuaa7r).
+// Renders as an <a> in the header, a <div> in the footer — the recovered
+// footer markup uses a non-interactive div since the footer wordmark isn't
+// a link back to "/" a second time in the same page region.
+export interface Props {
+  variant: "header" | "footer";
+}
+const { variant } = Astro.props;
+const Tag = variant === "header" ? "a" : "div";
+---
+
+<Tag
+  class={`wordmark wordmark--${variant}`}
+  {...variant === "header" ? { href: "/", "aria-label": "Tiffany Noelle Chacon — home" } : {}}
+>
+  <span class="wordmark-name">Tiffany Noelle Chacon</span>
+  <span class="wordmark-divider" aria-hidden="true">
+    <span class="wordmark-line"></span>
+    <span class="wordmark-dot"></span>
+    <span class="wordmark-line"></span>
+  </span>
+  <span class="wordmark-sub">Author &amp; Podcaster</span>
+</Tag>
+
+<style>
+  .wordmark {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    color: var(--color-ink);
+    line-height: 1.1;
+  }
+  .wordmark-name {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .wordmark-divider {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0;
+  }
+  .wordmark-line {
+    width: 20px;
+    height: 1px;
+    background: var(--color-gold);
+  }
+  .wordmark-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-tiffany);
+    flex-shrink: 0;
+  }
+  .wordmark-sub {
+    font-family: var(--font-mono);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .wordmark--header .wordmark-name {
+    font-size: 1.15rem;
+  }
+  .wordmark--header .wordmark-line {
+    width: 14px;
+  }
+  .wordmark--header .wordmark-sub {
+    font-size: 0.55rem;
+  }
+  .wordmark--footer .wordmark-name {
+    font-size: 1.5rem;
+  }
+  .wordmark--footer .wordmark-sub {
+    font-size: 0.65rem;
+  }
+  @media (max-width: 640px) {
+    .wordmark--header .wordmark-divider,
+    .wordmark--header .wordmark-sub {
+      display: none;
+    }
+  }
+</style>

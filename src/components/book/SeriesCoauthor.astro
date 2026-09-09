@@ -1,0 +1,77 @@
+---
+// Recovered verbatim (data-astro-cid-j5gtah4h) — shown on Love in Starlight
+// Valley's series page and the Promise You the Moon book page (the two
+// recovered pages involving a co-author). Not shown on Sports in the
+// Sunshine State or Equestrian Dreams, which are solo-authored.
+// [ARTIFACT]: the eyebrow text genuinely differs between the two recovered
+// instances — "A Two-Author Series" on the series page, "A Two-Author Book"
+// on the Promise You the Moon detail page — so it's a prop rather than
+// hardcoded, defaulting to the series-page wording already in use.
+export interface Props {
+  body: string;
+  coauthorName: string;
+  coauthorUrl?: string | null;
+  accentTextVar: string;
+  eyebrow?: string;
+}
+const { body, coauthorName, coauthorUrl, accentTextVar, eyebrow = "A Two-Author Series" } = Astro.props;
+---
+
+<section class="section series-coauthor" aria-labelledby="coauthor-heading" style={`--_accent-text: ${accentTextVar}`}>
+  <div class="wrap wrap--narrow series-coauthor__inner">
+    <p class="eyebrow">{eyebrow}</p>
+    <div class="series-coauthor__names">
+      <span class="series-coauthor__name">Tiffany Noelle Chacon</span>
+      <span class="series-coauthor__amp" aria-hidden="true">&amp;</span>
+      {coauthorUrl ? (
+        <a class="series-coauthor__name series-coauthor__name--link" href={coauthorUrl} target="_blank" rel="noopener noreferrer">
+          {coauthorName}
+        </a>
+      ) : (
+        <span class="series-coauthor__name series-coauthor__name--link">{coauthorName}</span>
+      )}
+    </div>
+    <p class="series-coauthor__body" id="coauthor-heading">{body}</p>
+  </div>
+</section>
+
+<style>
+  .series-coauthor__inner {
+    text-align: center;
+  }
+  .series-coauthor__names {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-block: var(--space-xs) var(--space-md);
+  }
+  .series-coauthor__name {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-3);
+    color: var(--color-ink);
+  }
+  .series-coauthor__name--link {
+    color: var(--_accent-text);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 5px;
+  }
+  .series-coauthor__amp {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-1);
+    color: var(--color-muted);
+  }
+  .series-coauthor__body {
+    color: var(--color-muted);
+    max-width: 44ch;
+    margin-inline: auto;
+  }
+  @media (max-width: 640px) {
+    .series-coauthor__name {
+      font-size: var(--step-2);
+    }
+  }
+</style>

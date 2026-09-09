@@ -1,0 +1,409 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Cover from "../components/shared/Cover.astro";
+import Newsletter from "../components/shared/Newsletter.astro";
+import { getBookBySlug } from "../data/catalog.js";
+
+// [ARTIFACT] "Keep Reading" pathway covers — three decorative (alt="")
+// covers, one representing the free start-here read of each series:
+// Love in Starlight Valley (Shoot the Moon), Sports in the Sunshine State
+// (Pucks & Pranks), Equestrian Dreams (Off Course). Confirmed by decoding
+// and MD5-matching the recovered artifact's embedded base64 images against
+// the recovered cover assets.
+const shootTheMoon = getBookBySlug("shoot-the-moon");
+const pucksAndPranks = getBookBySlug("pucks-and-pranks");
+const offCourse = getBookBySlug("off-course");
+---
+
+<BaseLayout title="About Tiffany — Tiffany Noelle Chacon" description="Clean, kisses-only contemporary romance and rom-com author Tiffany Noelle Chacon.">
+  <section class="about-hero">
+    <div class="wrap wrap--wide about-hero__grid">
+      <div class="about-hero__media">
+        <span aria-hidden="true" class="about-hero__field"></span>
+        <span aria-hidden="true" class="about-hero__frame"></span>
+        <picture>
+          <img
+            src="/images/author/about-closeup.jpg"
+            alt="Close-up portrait of author Tiffany Noelle Chacon, smiling"
+            width="1000"
+            height="1500"
+            fetchpriority="high"
+          />
+        </picture>
+      </div>
+      <div class="about-hero__copy">
+        <p class="eyebrow">About Tiffany</p>
+        <h1 class="about-hero__headline">Hi, I'm Tiffany.</h1>
+        <p class="about-hero__body">
+          Every book here runs on the same rule: real chemistry, real banter, real
+          stakes — and not a single explicit scene. I write clean, kisses-only
+          contemporary romance and rom-com, and this page is the long version of
+          why.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section about-bio">
+    <div class="wrap wrap--narrow">
+      <h2 class="visually-hidden">About Tiffany's Writing</h2>
+      <p>
+        Tiffany Noelle Chacon writes clean, kisses-only contemporary romance and
+        rom-com — the kind built on real banter, real chemistry, and stakes that
+        matter, without a single explicit scene.
+      </p>
+      <p>
+        Her catalog covers a lot of ground: small-town sweethearts in Love in
+        Starlight Valley, sports banter in Sports in the Sunshine State,
+        equestrian ambition in Equestrian Dreams, and a handful of standalone
+        Christmas and romantic-comedy novellas. Different setting every time —
+        same promise underneath.
+      </p>
+      <div class="about-bio__promise">
+        <hr class="rule--accent" />
+        <p class="about-bio__promise-line">Kisses only. No explicit scenes. Ever.</p>
+        <p class="about-bio__promise-sub">No profanity, either — every book, every series.</p>
+      </div>
+      <p>
+        She holds an MFA in Creative Writing from the University of Tampa — and
+        puts that training to work on the page alongside something a little less
+        expected for a romance author.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--tight promise">
+    <span aria-hidden="true" class="promise__bgword">Promise</span>
+    <div class="wrap">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Tiffany's Reading Promise</p>
+        <h2>What you can always count on</h2>
+      </div>
+      <ul class="promise__list">
+        <li><span aria-hidden="true" class="promise__mark"></span>Laugh-out-loud banter</li>
+        <li><span aria-hidden="true" class="promise__mark"></span>Swoony, slow-burn chemistry</li>
+        <li><span aria-hidden="true" class="promise__mark"></span>Kisses only — always clean</li>
+        <li><span aria-hidden="true" class="promise__mark"></span>Big feelings, bigger hearts</li>
+        <li><span aria-hidden="true" class="promise__mark"></span>Communities worth moving to</li>
+        <li><span aria-hidden="true" class="promise__mark"></span>Happily-ever-afters, guaranteed</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--surface about-equestrian" aria-labelledby="equestrian-heading">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow" id="equestrian-heading">The Unexpected Part</p>
+      <h2 class="visually-hidden">Tiffany's Equestrian Background</h2>
+      <div class="about-equestrian__body">
+        <span aria-hidden="true" class="about-equestrian__lead">Five-time</span>
+        <p class="about-equestrian__p about-equestrian__p--first">
+          national equestrian champion. It's not the first thing most people
+          guess about a romance author, but it's exactly why the competitive
+          detail in Equestrian Dreams (Off Course, Jump, Fall, Soar) feels
+          lived-in instead of researched — the training, the nerves, the
+          language of the sport, drawn from years actually spent in the ring.
+        </p>
+        <p class="about-equestrian__p">
+          It's one part of the story, not the whole thing. Most of Tiffany's
+          catalog has nothing to do with horses at all — but when the sport
+          does show up on the page, it's the real thing.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section about-credentials" aria-labelledby="credentials-heading">
+    <div class="wrap wrap--narrow">
+      <div class="section-head">
+        <p class="eyebrow" id="credentials-heading">Credentials &amp; Recognition</p>
+        <h2>A short list, not a résumé</h2>
+      </div>
+      <ul class="about-credentials__list">
+        <li>MFA in Creative Writing — University of Tampa</li>
+        <li>Five-Time National Equestrian Champion</li>
+        <li>
+          Winner — 2023 EQUUS Film Festival Literary Award for Fiction
+          <span class="about-credentials__book">— Jump</span>
+        </li>
+        <li>
+          Winner — 2025 Swoony Award, Novella Category
+          <span class="about-credentials__book">— A Christmas Court(ship)</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--tight section--surface about-pathway" aria-labelledby="pathway-heading">
+    <div class="wrap wrap--narrow">
+      <div class="about-pathway__grid">
+        <ul aria-hidden="true" class="about-pathway__covers">
+          <li><Cover image={shootTheMoon.cover.image} alt="" /></li>
+          <li><Cover image={pucksAndPranks.cover.image} alt="" /></li>
+          <li><Cover image={offCourse.cover.image} alt="" /></li>
+        </ul>
+        <div class="about-pathway__copy">
+          <p class="eyebrow" id="pathway-heading">Keep Reading</p>
+          <h2>Find your next Tiffany read</h2>
+          <p>
+            Three series, a few standalone reads, and one reading promise
+            across all of them. My Books has quick picks if you're not sure
+            where to start.
+          </p>
+          <a class="btn btn--primary" href="/books/">Browse My Books</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  .about-hero {
+    padding-top: var(--space-xl);
+    padding-bottom: var(--space-2xl);
+    overflow: hidden;
+  }
+  .about-hero__grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .about-hero__media {
+    position: relative;
+  }
+  .about-hero__media picture,
+  .about-hero__media img {
+    border-radius: var(--radius-lg);
+  }
+  .about-hero__media img {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: 2 / 3;
+  }
+  .about-hero__field {
+    position: absolute;
+    z-index: 1;
+    right: -1.5rem;
+    bottom: -1.5rem;
+    width: 65%;
+    height: 55%;
+    background: var(--color-tiffany);
+    opacity: 0.18;
+    border-radius: var(--radius-lg);
+  }
+  .about-hero__frame {
+    position: absolute;
+    z-index: 1;
+    left: -1rem;
+    top: -1rem;
+    width: 40%;
+    height: 32%;
+    border: 1px solid var(--color-gold);
+    opacity: 0.5;
+    border-radius: var(--radius-md);
+  }
+  .about-hero__copy {
+    max-width: 40rem;
+  }
+  .about-hero__headline {
+    font-style: italic;
+    font-size: var(--step-5);
+    margin-bottom: var(--space-md);
+  }
+  .about-hero__body {
+    font-size: var(--step-1);
+    color: var(--color-muted);
+    max-width: 44ch;
+  }
+  @media (max-width: 900px) {
+    .about-hero__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+    }
+    .about-hero__media {
+      order: 0;
+      max-width: 14rem;
+      margin-inline: auto;
+    }
+    .about-hero__copy {
+      order: 1;
+      max-width: none;
+      text-align: left;
+    }
+    .about-hero__headline {
+      font-size: var(--step-4);
+    }
+    .about-hero {
+      padding-top: var(--space-lg);
+    }
+  }
+
+  .about-bio p {
+    font-size: var(--step-1);
+    color: var(--color-ink);
+    max-width: 62ch;
+    margin-bottom: var(--space-md);
+  }
+  .about-bio p:last-child {
+    margin-bottom: 0;
+  }
+  .about-bio__promise {
+    margin-block: var(--space-lg);
+    max-width: 62ch;
+  }
+  .about-bio .about-bio__promise-line {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    color: var(--color-tiffany-text);
+    margin-block: var(--space-sm) var(--space-2xs);
+  }
+  .about-bio .about-bio__promise-sub {
+    font-size: var(--step--1);
+    color: var(--color-muted);
+    margin-bottom: 0;
+  }
+
+  .promise {
+    position: relative;
+    overflow: hidden;
+  }
+  .promise__bgword {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(6rem, 22vw, 15rem);
+    color: var(--color-rose-text);
+    opacity: 0.06;
+    white-space: nowrap;
+    line-height: 1;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .promise > .wrap {
+    position: relative;
+    z-index: 1;
+  }
+  .promise__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--space-md) var(--space-lg);
+    max-width: 56rem;
+    margin-inline: auto;
+  }
+  .promise__list li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-1);
+  }
+  .promise__mark {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-rose);
+    flex-shrink: 0;
+    transform: translateY(-2px);
+  }
+
+  .about-equestrian__body {
+    position: relative;
+  }
+  .about-equestrian__lead {
+    float: left;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 4.5rem;
+    line-height: 0.85;
+    color: var(--series-equestrian-dreams-text);
+    margin-right: var(--space-sm);
+    margin-top: 0.15rem;
+  }
+  .about-equestrian__p {
+    font-size: var(--step-1);
+    color: var(--color-ink);
+    max-width: 58ch;
+    margin-bottom: var(--space-md);
+  }
+  .about-equestrian__p:last-child {
+    margin-bottom: 0;
+  }
+  @media (max-width: 640px) {
+    .about-equestrian__lead {
+      font-size: 3rem;
+    }
+  }
+
+  .about-credentials__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    border-top: var(--border-hairline);
+    padding-top: var(--space-md);
+  }
+  .about-credentials__list li {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-1);
+    color: var(--color-ink);
+    padding-bottom: var(--space-sm);
+    border-bottom: var(--border-hairline);
+  }
+  .about-credentials__list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .about-credentials__book {
+    font-family: var(--font-mono);
+    font-style: normal;
+    font-size: var(--step--1);
+    color: var(--color-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .about-pathway__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .about-pathway__covers {
+    display: flex;
+    gap: var(--space-xs);
+  }
+  .about-pathway__covers li {
+    width: 100%;
+    max-width: 4.5rem;
+  }
+  .about-pathway__covers li:nth-child(2) {
+    margin-top: var(--space-md);
+  }
+  .about-pathway__copy p {
+    color: var(--color-muted);
+    max-width: 46ch;
+    margin-block: var(--space-sm) var(--space-md);
+  }
+  @media (max-width: 780px) {
+    .about-pathway__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+    }
+    .about-pathway__covers {
+      max-width: 16rem;
+      margin-inline: auto;
+      justify-content: center;
+    }
+  }
+</style>

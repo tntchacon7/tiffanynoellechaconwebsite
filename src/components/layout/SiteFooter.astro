@@ -1,0 +1,167 @@
+---
+// Recovered verbatim from all 7 Artifacts (data-astro-cid-sz7xmlte).
+// [ARTIFACT]: re-checked directly against the raw markup of every single
+// recovered Artifact (including the series pages and Promise You the Moon,
+// which belong to a series themselves) — every one lists all 3 series in
+// the footer's "Series" column with no omission. An earlier pass in this
+// project incorrectly recorded a "current page's series is omitted" rule;
+// that was not actually true of any recovered Artifact and has been
+// reverted. `currentSeries` is still accepted as a prop (harmlessly unused)
+// so existing call sites don't need to change.
+import Wordmark from "./Wordmark.astro";
+
+export interface Props {
+  currentSeries?: "love-in-starlight-valley" | "sports-in-the-sunshine-state" | "equestrian-dreams";
+}
+
+const ALL_SERIES = [
+  { slug: "love-in-starlight-valley", title: "Love in Starlight Valley" },
+  { slug: "sports-in-the-sunshine-state", title: "Sports in the Sunshine State" },
+  { slug: "equestrian-dreams", title: "Equestrian Dreams" },
+];
+const seriesLinks = ALL_SERIES;
+---
+
+<footer class="site-footer">
+  <div class="wrap wrap--wide">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <Wordmark variant="footer" />
+        <p class="site-footer__tag">Clean, kisses-only contemporary romance and rom-com.</p>
+      </div>
+      <div class="site-footer__cols">
+        <div class="site-footer__col">
+          <h2>Explore</h2>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/books/">My Books</a></li>
+            <li><a href="/find-your-next-read/">Find Your Next Read</a></li>
+            <li><a href="/about/">About</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h2>Series</h2>
+          <ul>
+            {seriesLinks.map((s) => (
+              <li><a href={`/series/${s.slug}/`}>{s.title}</a></li>
+            ))}
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h2>Reading Room</h2>
+          <ul>
+            <li><a href="/clean-romance/">Clean Romance Reading Room</a></li>
+            <li><a href="/clean-romance/what-is-clean-romance/">What Is Clean Romance?</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h2>More</h2>
+          <ul>
+            <li>
+              <a href="http://thecleanromancepodcast.com/" target="_blank" rel="noopener noreferrer">The Clean Romance Podcast</a>
+            </li>
+            <li><a href="#newsletter">Newsletter</a></li>
+            <li><a href="/privacy-policy/">Privacy Policy</a></li>
+            <li><a href="/terms/">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <hr class="rule" />
+    <div class="site-footer__bottom">
+      <p>© 2026 Tiffany Noelle Chacon. All rights reserved.</p>
+      <ul class="site-footer__social">
+        <li><a href="https://instagram.com/authortiffanynoellechacon" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a href="https://tiktok.com/@authortiffanynoellechacon" target="_blank" rel="noopener noreferrer">TikTok</a></li>
+        <li><a href="https://facebook.com/authortiffanynoellechacon" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-surface);
+    padding-block: var(--space-2xl) var(--space-lg);
+  }
+  .site-footer__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 2.4fr);
+    gap: var(--space-2xl);
+    margin-bottom: var(--space-xl);
+  }
+  .site-footer__brand .wordmark {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .site-footer__tag {
+    margin-top: var(--space-sm);
+    color: var(--color-muted);
+    max-width: 26ch;
+  }
+  .site-footer__cols {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-lg);
+  }
+  .site-footer__col h2 {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-ink);
+    margin-bottom: var(--space-sm);
+  }
+  .site-footer__col ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  .site-footer__col a {
+    color: var(--color-muted);
+    text-decoration: none;
+    font-size: var(--step--1);
+  }
+  .site-footer__col a:hover {
+    color: var(--color-tiffany-text);
+  }
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-sm);
+    padding-top: var(--space-lg);
+    color: var(--color-muted);
+    font-size: var(--step--1);
+  }
+  .site-footer__social {
+    display: flex;
+    gap: var(--space-md);
+  }
+  .site-footer__social a {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+  .site-footer__social a:hover {
+    color: var(--color-tiffany-text);
+  }
+  @media (max-width: 860px) {
+    .site-footer__top {
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+    }
+    .site-footer__brand .wordmark {
+      align-items: center;
+      text-align: center;
+      margin-inline: auto;
+    }
+    .site-footer__cols {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .site-footer__bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

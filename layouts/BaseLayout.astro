@@ -1,0 +1,38 @@
+---
+// Base page shell. Recovered structure: skip-link -> header -> <main id="main"> -> footer
+// (see Recovery-Inventory-Report.md Section 1.2). Font loading: the 5
+// @font-face rules (Newsreader normal/italic, Work Sans, IBM Plex Mono
+// 400/500) are self-hosted from /fonts/*.woff2, extracted byte-for-byte
+// from the base64 data: URIs embedded in every recovered Artifact's own
+// <style> block — see src/styles/tokens.css. No Google Fonts CDN link is
+// used; nothing needed substituting.
+import SiteHeader from "../components/layout/SiteHeader.astro";
+import SiteFooter from "../components/layout/SiteFooter.astro";
+import "../styles/tokens.css";
+import "../styles/global.css";
+
+export interface Props {
+  title: string;
+  description?: string;
+  currentSeries?: "love-in-starlight-valley" | "sports-in-the-sunshine-state" | "equestrian-dreams";
+}
+const { title, description, currentSeries } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <SiteHeader />
+    <main id="main">
+      <slot />
+    </main>
+    <SiteFooter currentSeries={currentSeries} />
+  </body>
+</html>
