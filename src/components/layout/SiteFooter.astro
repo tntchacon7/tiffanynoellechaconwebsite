@@ -69,7 +69,13 @@ const seriesLinks = ALL_SERIES;
     </div>
     <hr class="rule" />
     <div class="site-footer__bottom">
-      <p>© 2026 Tiffany Noelle Chacon. All rights reserved.</p>
+      <div class="site-footer__legal">
+        <p>© 2026 Tiffany Noelle Chacon. All rights reserved.</p>
+        {/* [R3 ADDITION] Required Amazon Associates disclosure — added site-wide
+            now that live Amazon affiliate links exist on book detail pages.
+            Exact required wording only, per Tyler's R3 decision 9. */}
+        <p class="site-footer__disclosure">As an Amazon Associate I earn from qualifying purchases.</p>
+      </div>
       <ul class="site-footer__social">
         <li><a href="https://instagram.com/authortiffanynoellechacon" target="_blank" rel="noopener noreferrer">Instagram</a></li>
         <li><a href="https://tiktok.com/@authortiffanynoellechacon" target="_blank" rel="noopener noreferrer">TikTok</a></li>
@@ -134,6 +140,14 @@ const seriesLinks = ALL_SERIES;
     padding-top: var(--space-lg);
     color: var(--color-muted);
     font-size: var(--step--1);
+  }
+  .site-footer__legal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+  }
+  .site-footer__disclosure {
+    margin: 0;
   }
   .site-footer__social {
     display: flex;

@@ -30,8 +30,20 @@
 //   - readerHooks     → a distinct "Reader Hooks" list, only where a book's
 //                       own detail page uses different wording than its card
 //                       trope pills (currently only Promise You the Moon)
+//   - microHook       → [R3 ADDITION, TYLER-SUPPLIED] a third, even-shorter
+//                       copy variant from "Tiffany's Book Hooks.xlsx" (the
+//                       "Micro Hook" column), distinct from both `hook` and
+//                       `blurb`. No recovered page slot uses this yet — it is
+//                       stored for possible future use (Find Your Next Read,
+//                       cards, metadata) and is NOT rendered anywhere in R3.
+//                       Set only where the spreadsheet actually supplies a
+//                       value; never derived or invented.
 //   - series/position → series membership + reading-order position
-//   - release/retail  → availability, format, and (unpopulated) retailer info
+//   - release/retail  → availability, format, and retailer info. Each
+//                       `retail` entry may carry an optional `access` field
+//                       ("direct" | "gated") — [R3 ADDITION] distinguishing a
+//                       direct BookFunnel download from a subscriber-gated
+//                       BookFunnel destination, so CTA copy can tell them apart.
 //
 // One open terminology tension, flagged rather than resolved: [MEMORY LOG]
 // states "all catalog titles are full-length novels except The Cowboy
@@ -131,6 +143,8 @@ export const SERIES = [
 // collaboration   string | null  — multi-author series this title belongs to
 // bookType        "novel" | "novella" | null — see terminology note above
 // hook            short one-line card copy, or null
+// microHook       [R3, TYLER-SUPPLIED] third-tier short copy variant, stored
+//                 only, not displayed anywhere in R3 — see header note above
 // blurb           long-form back-cover copy, or null
 // tropes          string[] — VISIBLE pills
 // keywordTropes   string[] — fuller SEO/discovery list (superset of tropes)
@@ -161,7 +175,10 @@ export const BOOKS = [
     bookType: null, // see terminology note in file header
     hook:
       "Mila's life looks flawless from the outside — until the search for her dream horse starts exposing cracks in everything she thought was perfect. As the filters fall away, she'll have to decide what she really wants, both in and out of the saddle.", // [ARTIFACT] verbatim
-    blurb: null,
+    microHook:
+      "The perfect boyfriend. The perfect life. The perfect horse—if only any of it were that simple.", // [TYLER-SUPPLIED, R3] "Tiffany's Book Hooks.xlsx" — stored only, not displayed
+    blurb:
+      "Everything in college sophomore Mila Kozak's life is picture perfect. She has an amazing boyfriend, Michael. Her relationship with her sister, Anya, is worthy of envy. Even her sport of choice—show jumping—is Instagram-worthy. All she's missing is Prince Charming. In horse-form, that is.\n\nBut as Mila searches for the ideal horse, the rest of her flawless world begins to unravel. And she's left wondering if it was all that perfect to begin with.\n\nSet in the world of competitive show jumping, this novella peels back the filter of a picture-perfect life.", // [TYLER-SUPPLIED, R3] verbatim from the long-form blurb packet
     tropes: ["Unrequited love", "Love triangle"], // [ARTIFACT]
     keywordTropes: ["Unrequited love", "Love triangle"], // [SPREADSHEET] "Unrequited love/love triangle" — no additional terms
     readerHooks: null,
@@ -170,7 +187,7 @@ export const BOOKS = [
     content: { cleanKissesOnly: true, noProfanity: true, sensitiveNotes: ["traumatic horse-riding accident"] }, // [MEMORY LOG]
     cover: { image: "/images/covers/off-course.jpg", alt: "Off Course book cover by Tiffany Noelle Chacon" }, // [ARTIFACT]
     release: { date: null, year: "2023", status: "released" }, // [SPREADSHEET]
-    retail: [], // [MEMORY LOG]: intentionally no Amazon link by design, routed to BookFunnel instead — but no confirmed BookFunnel URL recovered; left empty rather than guessed
+    retail: [{ retailer: "bookfunnel", url: "https://dl.bookfunnel.com/m4uzadga09", access: "direct" }], // [TYLER-SUPPLIED, R3] free prequel novella, direct download — confirms the earlier "no Amazon link by design" note
     freeRead: true, // [MEMORY LOG]
     awards: [],
     formats: ["ebook", "paperback"], // [SPREADSHEET]
@@ -188,7 +205,10 @@ export const BOOKS = [
     bookType: "novel", // [MEMORY LOG]
     hook:
       "A year after her sister's devastating riding accident, Mila is terrified of the sport she once loved — and desperate to get her old life back. But one unexpected kiss with her friend and barnmate Alex sends her in an entirely new direction, if she's brave enough to take the leap.", // [ARTIFACT]
-    blurb: null,
+    microHook:
+      "She’s afraid to jump again. Falling for her friend might be the biggest leap of all.", // [TYLER-SUPPLIED, R3] "Tiffany's Book Hooks.xlsx" — stored only, not displayed
+    blurb:
+      "Fear has held her back for too long. Can she make the ultimate leap?\n\nIt’s been a year since college senior Mila Kozak watched her sister Anya’s tragic accident at a horse show in Wellington, Florida. Since then, nothing has been the same. Her relationship with her sister is as shattered as Anya’s paralyzed body. Her boyfriend of two years dumped her out of the blue and, even though she’s doing everything she can to win him back, he won’t give her the time of day. And her favorite thing in the world—show jumping—is tainted by the crippling fear she’ll end up like Anya.\n\nMila wants nothing more than to be her old life-of-the-party, live-in-the-moment self. But no matter what she does, she’s not that Mila anymore.\n\nWhen Mila rescues her friend and barnmate, Alex, with a kiss, it sets them on a trajectory that’s as surprising as it is electrifying.\n\nBut when everything Mila holds dear is threatened yet again, will she make the jump and land where she’s meant to be?\n\nSet in the world of competitive show jumping, JUMP is a new adult romance about falling in love, facing your fears and building your own happily-ever-after.\n\nThis is the first book in the Equestrian Dreams series, which is a clean romance series set in Florida. You'll find all the sizzling chemistry you love without any smut.", // [TYLER-SUPPLIED, R3] verbatim from the long-form blurb packet
     tropes: ["Friends to more", "PTSD/mental health rep"], // [ARTIFACT]
     keywordTropes: ["Friends to more", "PTSD/mental health rep", "early first kiss"], // [SPREADSHEET] adds "early first kiss"
     readerHooks: null,
@@ -201,7 +221,10 @@ export const BOOKS = [
     },
     cover: { image: "/images/covers/jump.jpg", alt: "Jump book cover by Tiffany Noelle Chacon" }, // [ARTIFACT]
     release: { date: null, year: "2023", status: "released" }, // [SPREADSHEET]
-    retail: [{ retailer: "audiobook", url: "https://amzn.to/4c7g0eF", affiliate: true }], // [MEMORY LOG] — only retail link recovered anywhere in this catalog
+    retail: [
+      { retailer: "audiobook", url: "https://amzn.to/4c7g0eF", affiliate: true }, // [MEMORY LOG] — the one retail link recovered from R2
+      { retailer: "amazon", url: "https://amzn.to/4q46DC2", affiliate: true }, // [TYLER-SUPPLIED, R3]
+    ],
     freeRead: false,
     awards: [{ name: "2023 EQUUS Film Festival Literary Award for Fiction", year: "2023" }], // [ARTIFACT] + [MEMORY LOG]
     formats: ["ebook", "paperback", "audiobook", "kindle-unlimited"], // [SPREADSHEET]
@@ -219,7 +242,10 @@ export const BOOKS = [
     bookType: "novel", // [MEMORY LOG]
     hook:
       "Anya has finally built herself a safe place to land. The last thing she needs is Luke Craig — a country-music-blasting, cowboy-hat-wearing therapist who challenges every boundary she's built. But sometimes falling for the wrong person is exactly how you find where you belong.", // [ARTIFACT]
-    blurb: null,
+    microHook:
+      "She built herself a safe new life. Then a cowboy in a therapist’s badge walked straight into it.", // [TYLER-SUPPLIED, R3] "Tiffany's Book Hooks.xlsx" — stored only, not displayed
+    blurb:
+      "Will they be able to stand after everything falls apart?\n\nAnya\n\nI’m finally feeling safe after my accident—the Center has become my comfort zone, and getting to help other paraplegics has become my life’s work. But then Luke Craig shows up as our new lead therapist, blasting his vile country music and tipping his cowboy hat at me like we’re stuck in some western horror movie.\n\nLuke does NOT fit into my comfort zone—he’s anything but safe.\n\nFrustrating? Yes.\n\nUnprofessional? Yes.\n\nCharming and terribly attractive? Unfortunately, also yes.\n\nI just have to make it a few more weeks until I can fire Luke…unless those gorgeous blue eyes kill me first.\n\nMila\n\nThe Center becoming a reality is a dream come true, and every day I get to work here with my sister and Alex is a blessing. But when Clara’s fall jeopardizes everything we’ve worked for, it feels like someone’s pushed us off a cliff. And I’m not quite sure we’ll all be intact when we land.\n\nAlex\n\nI finally have the girl of my dreams, but I’m still not sure I’m enough for her. And with my immigration court disaster, I’m not sure I’ll be in this country long enough to prove to Mila—or her dad—that I’m worthy of her.\n\nCan Anya let go of her prejudices and fears in order to let herself be loved? Will Mila and Alex be able to stand, even when everything around them is falling apart?\n\nFALL into the second installment of the Equestrian Dreams series, a heartwarming and emotional tale of navigating life’s challenges, falling in love and finding a safe place to land. Follow Anya, Mila and Alex on a journey where hopes are dashed, enemies become something more than you'd ever imagine, and lives are rebuilt after they fall.\n\nThis is the second book in the Equestrian Dreams series, which is a clean romance series set in Florida. You’ll find all the sizzling chemistry you love without any smut.", // [TYLER-SUPPLIED, R3] verbatim from the long-form blurb packet
     // NOTE: the earliest-captured Artifact (My Books) shows only 2 visible
     // pills here (Enemies to lovers, Sisterhood); the later Equestrian
     // Dreams series-page Artifact shows 3 (adds Wheelchair user rep).
@@ -238,7 +264,7 @@ export const BOOKS = [
     },
     cover: { image: "/images/covers/fall.jpg", alt: "Fall book cover by Tiffany Noelle Chacon" }, // [ARTIFACT]
     release: { date: null, year: "2023", status: "released" }, // [SPREADSHEET]
-    retail: [],
+    retail: [{ retailer: "amazon", url: "https://amzn.to/4hppbKJ", affiliate: true }], // [TYLER-SUPPLIED, R3]
     freeRead: false,
     awards: [],
     formats: ["ebook", "paperback", "kindle-unlimited"], // [SPREADSHEET]
@@ -256,7 +282,20 @@ export const BOOKS = [
     bookType: "novella", // [MEMORY LOG]
     hook:
       "Freshly fired and unexpectedly alone for Christmas, Monica plans to distract herself from her problems — until her best friend's cowboy pal Matthew becomes her unexpected houseguest. He's nothing like the men she usually dates … and this temporary distraction is starting to feel dangerously permanent.", // [ARTIFACT]
-    blurb: null,
+    microHook:
+      "She wanted a holiday distraction. She got a cowboy on her doorstep instead.", // [TYLER-SUPPLIED, R3] "Tiffany's Book Hooks.xlsx" — stored only, not displayed
+    // [TYLER-SUPPLIED, R3] blurb trimmed from the source packet: the packet's
+    // own text ends with a separate "Tropes you'll find (and love) in this
+    // novella: Grumpy/sunshine Forced proximity Christmas in the city Found
+    // family" line. That line is a list header + enumeration, not back-cover
+    // prose, and it duplicates the already-separately-modeled `tropes` field
+    // (rendered as chips elsewhere on this page) — including it verbatim as
+    // an unpunctuated run-on sentence in the blurb's paragraph flow would be
+    // a formatting defect, not faithful preservation. Flagged here per the
+    // packet's own "flag conflicts, don't silently change" rule rather than
+    // silently dropped. The prose portion below is preserved exactly.
+    blurb:
+      "She's looking for a temporary distraction, but will she accidentally find love?\n\nMonica's holiday plans aren't looking so good. She just got fired from her job at Goldman Sachs in New York City and her office nemesis is blacklisting her from finding another job. Her best friend, Mila, is supposed to come in town for Christmas, but when Mila's flight is canceled, Monica's stuck hosting Mila's cowboy friend instead.\n\nWhen bull rider Matthew shows up at Monica's door, he looks like the perfect distraction from her woes.\n\nExcept Matthew isn't like any guy she's ever met before, and all the things that typically work for Monica are falling short. Could he be the catalyst to help Monica face her demons and finally give her heart to someone?\n\nThis sweet Christmas rom-com has all the laughs and chemistry you'd want in a romantic comedy, with none of the smut. And you'll find your favorite characters from the Equestrian Dreams series!",
     // [TYLER]: keep "Christmas in the city" and "Found family" as previously
     // approved, blurb-sourced tropes even though [SPREADSHEET] doesn't list
     // them. [TYLER] also resolved the spreadsheet's "Christian romance/faith
@@ -284,7 +323,7 @@ export const BOOKS = [
       alt: "The Cowboy Christmas Distraction book cover by Tiffany Noelle Chacon",
     }, // [ARTIFACT]
     release: { date: null, year: "2023", status: "released" }, // [SPREADSHEET]
-    retail: [],
+    retail: [{ retailer: "amazon", url: "https://amzn.to/4horpKv", affiliate: true }], // [TYLER-SUPPLIED, R3]
     freeRead: false,
     awards: [],
     formats: ["ebook", "paperback"], // [SPREADSHEET]
@@ -302,7 +341,17 @@ export const BOOKS = [
     bookType: "novel", // [MEMORY LOG]
     hook:
       "Grand Prix show jumper Trina Powers has sacrificed too much for her Olympic dreams to let another man get in the way. Then infuriating billionaire Grayson Sterling becomes the majority owner of the horse that could finally take her there — and working together becomes their only option.", // [ARTIFACT]
-    blurb: null,
+    microHook:
+      "She finally found the horse that could take her to the Olympics. Too bad he comes with a billionaire co-owner.", // [TYLER-SUPPLIED, R3] "Tiffany's Book Hooks.xlsx" — stored only, not displayed
+    // [TYLER-SUPPLIED, R3] blurb trimmed the same way as The Cowboy Christmas
+    // Distraction above: the source packet appends "Tropes you'll find (and
+    // love) in this novel: Enemies to lovers Slow Burn Opposites attract
+    // Neurodivergent FMC Billionaire love interest Single dad Age gap" after
+    // the prose — a list header/enumeration, not blurb copy, duplicating the
+    // `tropes`/`keywordTropes` fields already rendered as chips on this page.
+    // Excluded for the same reason, flagged rather than silently dropped.
+    blurb:
+      "Can they soar in the arena…and beyond?\n\nGrand Prix show jumper Trina Powers has one goal: make it to the Olympics. After nearly a decade of failed attempts, injured horses and broken relationships, she's finally a (very partial) owner of the horse that can take her to the top. And she's learned no man will stand in her way this time.\n\nThat is until Grayson J. Sterling shows up as the new majority owner of her horse. He's brusque and disgustingly rich—the two worst features a man could have, according to Trina—and devastatingly handsome. Can Trina and Grayson learn to work together, or will yet another man sabotage her dreams?\n\nMeanwhile, Mila is trying to be the \"perfect\" wife to Alex—thanks to the help of the Internet—while juggling her responsibilities at the Center and her rigorous competition schedule. Her own pursuit of Olympic success is threatened as she struggles to balance her personal and professional life. Can she find a way to be all that she needs to be, without destroying her bonds with either Alex or Trina?\n\nSOAR is a tale of resilience, passion, and the courage to embrace the unexpected. It's a story of overcoming fears, breaking down walls, and the transformative power of trust and teamwork. As Trina and Mila's paths converge, they discover that the road to the Olympics is about more than just winning; it's about the journey of self-discovery, the bonds we forge, and the choices that define us.",
     // [TYLER]: keep "Opposites attract" (approved-blurb source) even though
     // [SPREADSHEET] omits it; "Billionaire romance" and other spreadsheet
     // terms move to keywordTropes only, per the resolved recovery report.
@@ -327,7 +376,7 @@ export const BOOKS = [
     },
     cover: { image: "/images/covers/soar.jpg", alt: "Soar book cover by Tiffany Noelle Chacon" }, // [ARTIFACT]
     release: { date: null, year: "2024", status: "released" }, // [SPREADSHEET]
-    retail: [],
+    retail: [{ retailer: "amazon", url: "https://amzn.to/4g6NXx7", affiliate: true }], // [TYLER-SUPPLIED, R3]
     freeRead: false,
     awards: [],
     formats: ["ebook", "paperback", "kindle-unlimited"], // [SPREADSHEET]
@@ -354,7 +403,10 @@ export const BOOKS = [
     // rather than synthesizing back-cover copy from it. The character names
     // (Raquel Dawson, Henry Calloway) are real and confirmed; only the
     // full-paragraph blurb itself is unrecovered.
-    blurb: null,
+    microHook:
+      "She wants to be left alone. Her ridiculously friendly firefighter neighbor has other plans. A playful wager, family meddling, and one persistent ray of human sunshine bring two neighbors together in this heartfelt small-town rom-com.", // [TYLER-SUPPLIED, R3] "Tiffany's Book Hooks.xlsx" — identical to the existing `hook` (the sheet's "Short Website Blurb" cell was blank for this title, so `hook` was sourced from this same Micro Hook cell in R2); stored as supplied, not displayed
+    blurb:
+      "Raquel Dawson is trying to survive fifth-grade science, difficult students, and the heartbreak her so-called “hero” ex left behind. Henry Calloway is the firefighter next door who never seems to take life too seriously—especially when it comes to teasing the grumpy teacher down the hall.\n\nBut when a playful wager keeps throwing them together, Raquel starts to see Henry for who he really is: kind, dependable, funny, and exactly the sort of man she has been afraid to trust.\n\nShoot the Moon is a clean rom-com set in the Love in Starlight Valley series. It features opposites-attract chemistry, hilarious small-town antics, meddling family, healing after heartbreak, and swoony kisses.", // [TYLER-SUPPLIED, R3] verbatim from the long-form blurb packet
     tropes: ["Reverse grumpy/sunshine", "Teacher + fireman", "Meddling grandma"], // [ARTIFACT]
     keywordTropes: [
       "Reverse grumpy/sunshine",
@@ -371,7 +423,7 @@ export const BOOKS = [
     content: { cleanKissesOnly: true, noProfanity: true, sensitiveNotes: [] },
     cover: { image: "/images/covers/shoot-the-moon.jpg", alt: "Shoot the Moon book cover by Tiffany Noelle Chacon and Lindsay Rochester" }, // [ARTIFACT]
     release: { date: null, year: "2026", status: "released" }, // [SPREADSHEET]
-    retail: [], // [MEMORY LOG]: no Amazon link by design, BookFunnel-routed — no confirmed URL recovered
+    retail: [{ retailer: "bookfunnel", url: "https://dl.bookfunnel.com/nkviqnxhle", access: "direct" }], // [TYLER-SUPPLIED, R3] free prequel novella, direct download — confirms "no Amazon link by design"; the Kindle Unlimited tension noted below remains unreconciled
     freeRead: true, // [MEMORY LOG] + [ARTIFACT] "Start Free with Shoot the Moon"
     awards: [],
     formats: ["ebook", "paperback", "kindle-unlimited"], // [SPREADSHEET]
@@ -392,6 +444,8 @@ export const BOOKS = [
     bookType: "novel", // [MEMORY LOG]
     hook:
       "He left town to get over her. Nearly a decade later, he's back — and marrying her for convenience. A protective Marine, the girl he never stopped loving, and a marriage that's becoming much too real.", // [ARTIFACT]
+    microHook:
+      "Marrying the girl you never got over is…complicated. When Ellie needs protection from her abusive ex, Hunter offers the one thing guaranteed to keep her close: a marriage of convenience to the man who’s loved her all along.", // [TYLER-SUPPLIED, R3] "Tiffany's Book Hooks.xlsx" — stored only, not displayed
     blurb:
       "Hunter Dawson left town nearly a decade ago with two goals: serve his country and get over Ellie James. He accomplished exactly one of them.\n\nNow he's back in Starlight Valley—and Ellie is the one thing he never managed to leave behind.\n\nEllie James never imagined she'd be back at her parents' house—pregnant, overwhelmed, and recovering from an abusive marriage. The last thing she expects is for Hunter—the boy who always made her feel safe—to walk back into her life.\n\nWhen Ellie is in need of protection, Hunter is willing to do just about anything to provide it. A marriage of convenience seems like the perfect solution.\n\nPublicly, they're the ideal couple. But privately? It's getting harder to remember where the act ends and the truth begins.\n\nPromise You the Moon is a clean marriage-of-convenience romance set in the charming mountain town of Starlight Valley, featuring longtime pining, small-town charm, swoony kisses, and just enough danger to keep things interesting—but not too much to keep you up at night.", // [ARTIFACT] verbatim, from the book's own detail page
     // [TYLER] + [SPREADSHEET]: trope #2/#3 is "It's Always Been You," not
@@ -419,7 +473,7 @@ export const BOOKS = [
       alt: "Promise You the Moon book cover by Tiffany Noelle Chacon and Lindsay Rochester",
     }, // [ARTIFACT]; path also independently confirmed by the recovered JSON-LD on this exact page
     release: { date: "2026-09-22", year: "2026", status: "preorder" }, // [ARTIFACT] JSON-LD datePublished + "Preorder · Releases September 22, 2026"
-    retail: [{ retailer: "preorder", url: null }], // [ARTIFACT]: "Preorder Now — link coming soon" — destination not yet recovered, not fabricated
+    retail: [{ retailer: "preorder", url: "https://amzn.to/4cd97Z3", affiliate: true }], // [TYLER-SUPPLIED, R3]: real Amazon affiliate preorder link now supplied, replacing the R2 disabled placeholder
     freeRead: false,
     awards: [],
     formats: ["ebook", "paperback", "kindle-unlimited"], // [SPREADSHEET]
@@ -452,7 +506,10 @@ export const BOOKS = [
     bookType: null, // see terminology note in file header
     hook:
       "She follows the rules. He breaks them for fun. When sports journalist Isabella is assigned to profile the hockey star she hasn't spoken to since their prom-night disaster, old wounds — and old sparks — come roaring back.", // [ARTIFACT]
-    blurb: null,
+    microHook:
+      "A rule-following sports journalist. A prank-loving hockey star. One very overdue second chance.", // [TYLER-SUPPLIED, R3] "Tiffany's Book Hooks.xlsx" — stored only, not displayed
+    blurb:
+      "A prankster, a planner, and the second chance they never saw coming.\n\nIsabella Castillo follows the rules. Elliot Adler breaks them. She’s an up-and-coming sports journalist; he’s the Lightning’s star center with a reputation for pranks and charm. They haven’t spoken since a prom-night disaster—until she’s assigned to write his profile.\n\nDigging into his story uncovers more than highlight reels and playful banter. Old wounds resurface. Sparks reignite. And suddenly the girl who plans everything is falling for the guy who lives like nothing can hurt him.\n\nNow they’ll have to keep playing it safe… or take a shot at their second chance?\n\nPucks & Pranks is the prequel novella to the Sports in the Sunshine State RomCom series—clean, heart-pounding sports romances with big feelings, high-action moments, and zero cursing or smut. Each book stands alone—but they’re all connected by best friends and Florida sports.", // [TYLER-SUPPLIED, R3] verbatim from the long-form blurb packet — introduces character names (Isabella Castillo, Elliot Adler) not previously recorded in this catalog
     tropes: ["Enemies to lovers", "Second chance"], // [ARTIFACT]
     keywordTropes: [
       "Hockey romance", // [TYLER]: added to keywordTropes only, per resolved decision — not a visible trope
@@ -471,7 +528,7 @@ export const BOOKS = [
     content: { cleanKissesOnly: true, noProfanity: true, sensitiveNotes: [] },
     cover: { image: "/images/covers/pucks-pranks.jpg", alt: "Pucks & Pranks book cover by Tiffany Noelle Chacon" }, // [ARTIFACT]
     release: { date: null, year: "2024", status: "released" }, // [SPREADSHEET]
-    retail: [], // [MEMORY LOG]: free on both BookFunnel and Amazon, but Tyler prefers routing to BookFunnel — no confirmed URL recovered
+    retail: [{ retailer: "bookfunnel", url: "https://dl.bookfunnel.com/2lknprbvsq", access: "direct" }], // [TYLER-SUPPLIED, R3] free prequel novella, direct download — matches the noted BookFunnel-routing preference
     freeRead: true, // [MEMORY LOG] + [SPREADSHEET] "Free on BookFunnel and Amazon"
     awards: [],
     formats: ["ebook"], // [SPREADSHEET]
@@ -489,7 +546,10 @@ export const BOOKS = [
     bookType: "novel", // [MEMORY LOG]
     hook:
       "When overlooked quarterback Austin Taylor gets his shot at starting, data analyst Dani Marshall is the only one convinced he can pull it off. Betting on him is easy. Falling for him is a much bigger problem — especially when Dani's one rule is never date an athlete.", // [ARTIFACT]
-    blurb: null,
+    microHook:
+      "An underdog quarterback. The analyst who believes in him. One very inconvenient no-athletes rule.", // [TYLER-SUPPLIED, R3] "Tiffany's Book Hooks.xlsx" — stored only, not displayed
+    blurb:
+      "What happens when a football analyst bets her car—and (accidentally) her heart—on the NFL’s most unlikely quarterback?\n\nAustin Taylor expected to spend his NFL career warming the bench, not becoming the Tampa Bay Bucs’ unexpected starting quarterback—or going viral for tripping over his own cleats on national television.\n\nDani Marshall, the Bucs’ data analyst extraordinaire, sees what no one else does: hidden potential. So convinced Austin can succeed, she makes a reckless bet on his performance.\n\nNow her car—and her dignity—is on the line.\n\nKeeping it professional with Austin should be easy. Except the more time Dani spends with the humble yet charming quarterback, the harder it becomes to ignore the chemistry between them.\n\nAnd Austin? He’s falling fast and hard for the brilliant woman who believed in him before anyone else did.\n\nToo bad Dani has one ironclad rule: never date an athlete.\n\nOff the Bench is a clean football rom-com featuring sizzling chemistry, laugh-out-loud moments, and a heartwarming happily ever after. Perfect for fans of closed door romance and underdog love stories.", // [TYLER-SUPPLIED, R3] verbatim from the long-form blurb packet
     // Resolved per recovery report Section 2: [SPREADSHEET] confirms
     // "workplace romcom" is current, so the later/fuller Artifact (3 pills)
     // is used rather than the earliest Artifact's 2-pill version.
@@ -501,7 +561,7 @@ export const BOOKS = [
     content: { cleanKissesOnly: true, noProfanity: true, sensitiveNotes: [] },
     cover: { image: "/images/covers/off-the-bench.jpg", alt: "Off the Bench book cover by Tiffany Noelle Chacon" }, // [ARTIFACT]
     release: { date: null, year: "2024", status: "released" }, // [SPREADSHEET]
-    retail: [],
+    retail: [{ retailer: "amazon", url: "https://amzn.to/3TIyvzG", affiliate: true }], // [TYLER-SUPPLIED, R3]
     freeRead: false,
     awards: [],
     formats: ["ebook", "paperback", "kindle-unlimited"], // [SPREADSHEET]
@@ -545,7 +605,10 @@ export const BOOKS = [
     bookType: "novella", // [MEMORY LOG]
     hook:
       "Disgraced quarterback Drake Blythe needs community service to repair his reputation. Lyla Wilder is stuck supervising him — and still remembers the first time they met, even if he doesn't. But the more she discovers the man behind the headlines, the harder it becomes to stay mad at him.", // [ARTIFACT]
-    blurb: null,
+    microHook:
+      "A disgraced quarterback. The woman he doesn’t remember. A comeback neither saw coming.", // [TYLER-SUPPLIED, R3] "Tiffany's Book Hooks.xlsx" — stored only, not displayed
+    blurb:
+      "A disgraced quarterback, a forgotten first meeting, and a second chance neither of them saw coming.\n\nDrake\n\nGetting benched was bad. Getting traded to Miami . . . worse.\n\nThe real disaster? Everyone thinking I’m a draft bust who only cares about PR stunts.\n\nTo prove them wrong, I need to clean up my image—starting with community service at Play It Forward.\n\nThe problem? Lyla Wilder, the program’s administrator, clearly hates me. And I have no idea why.\n\nLyla\n\nDrake Blythe is exactly the kind of athlete I can’t stand—cocky, reckless, and completely unaware that we’ve met before.\n\nNow, I’m stuck babysitting him while drowning in work my boss won’t do.\n\nI refuse to fall for his charm. But the more I see of the man behind the headlines, the harder it is to remember why I wanted to stay mad in the first place…\n\nThe Comeback Play, a second chance novella, is book 8 of the Sweet Sports Kisses multi-author series—a sweet/clean romcom sports collection set across the U.S. Each story is connected through the Play It Forward organization, bringing heartwarming romance, humor, and just the right amount of competition. If you’re looking for no-spice, kisses only with the perfect amount of swoon, then this series is for you!", // [TYLER-SUPPLIED, R3] verbatim from the long-form blurb packet
     tropes: ["Second chance", "Comeback story", "Redemption arc"], // recovered in the prior reconciliation pass (before the wipe) and reconfirmed by [SPREADSHEET]'s "comeback story; second chance, redemption"
     keywordTropes: ["Second chance", "Comeback story", "Redemption arc", "Sports romance", "Good girl/bad boy", "Hidden identity"], // [SPREADSHEET]
     readerHooks: null,
@@ -554,7 +617,7 @@ export const BOOKS = [
     content: { cleanKissesOnly: true, noProfanity: true, sensitiveNotes: ["alcohol/intoxication"] }, // [MEMORY LOG]
     cover: { image: "/images/covers/the-comeback-play.jpg", alt: "The Comeback Play book cover by Tiffany Noelle Chacon" }, // [ARTIFACT]
     release: { date: null, year: "2025", status: "released" }, // [SPREADSHEET]
-    retail: [],
+    retail: [{ retailer: "amazon", url: "https://amzn.to/4fOTYj4", affiliate: true }], // [TYLER-SUPPLIED, R3]
     freeRead: false,
     awards: [],
     formats: ["ebook", "paperback", "kindle-unlimited"], // [SPREADSHEET]
@@ -569,7 +632,10 @@ export const BOOKS = [
     bookType: null, // not specified as novel/novella in [MEMORY LOG]
     hook:
       "Sadie has crushed on her best friend's older brother for years. When pro pickleball player Beckett needs a partner for their hometown Christmas tournament, she finally gets her chance to make him notice her — if their chemistry doesn't throw them both completely off their game.", // [ARTIFACT]
-    blurb: null,
+    microHook:
+      "Her longtime crush. Her best friend’s brother. Her new pickleball partner. What could possibly go wrong?", // [TYLER-SUPPLIED, R3] "Tiffany's Book Hooks.xlsx" — stored only, not displayed
+    blurb:
+      "Winner of the 2025 Swoony Award for the novellas category\n\nA best friend’s brother, a high-stakes holiday pickleball game, and a spark they can’t ignore.\n\nSadie:\n\nI’ve had a crush on Beckett Dawson forever—my best friend’s older brother, the hometown golden boy turned pro pickleball player. He’s been gone for years, but when he walks into my early-morning practice, I finally have a chance for him to notice me . . . and not just because I can return his serve.\n\nBeckett:\n\nAfter a messy breakup with my doubles partner—on and off the court—I won’t ever mix pickleball with romance again. But when the chance to take on my ex in our hometown Christmas tournament comes up, Sadie Hart is the only partner I want by my side. Trouble is, the more time we spend together, the more I realize the real game I’m playing isn’t on the court—it’s protecting my heart from falling for the girl I was never supposed to want.\n\nA Christmas Court(ship), a best friend’s brother novella, is book 3 of the Letters to Mrs. Claus multi-author series—a kisses-only romantic comedy collection bursting with holiday cheer. Each story is linked through Mrs. Claus’s Operation Mistletoe Match, where she receives a letter from a meddling friend or family member about someone lonely, heartbroken, or closed off to love. With her timeless wisdom, Mrs. Claus pens a tailored message to the subject of the letter, offering an inspiring note that tackles their romantic roadblock. Packed with hilarious mishaps, flustered blushes, and courageous adventures as they chase their happily-ever-after in this no-spice, swoon-worthy series!", // [TYLER-SUPPLIED, R3] verbatim from the long-form blurb packet — introduces the character name Sadie Hart, not previously recorded in this catalog
     // [TYLER]: "Meddling grandma" restored to both visible tropes and keywordTropes.
     tropes: ["Christmas romance", "Best friend's brother", "Meddling grandma", "Home for the holidays"], // [ARTIFACT] + [TYLER]
     keywordTropes: ["Christmas romance", "Best friend's brother", "Meddling grandma", "Home for the holidays", "Small town romance"], // [ARTIFACT] + [TYLER] + [SPREADSHEET]
@@ -579,7 +645,7 @@ export const BOOKS = [
     content: { cleanKissesOnly: true, noProfanity: true, sensitiveNotes: [] },
     cover: { image: "/images/covers/a-christmas-court-ship.jpg", alt: "A Christmas Court(ship) book cover by Tiffany Noelle Chacon" }, // [ARTIFACT]
     release: { date: null, year: "2025", status: "released" }, // [SPREADSHEET]
-    retail: [],
+    retail: [{ retailer: "amazon", url: "https://amzn.to/4xPX5gT", affiliate: true }], // [TYLER-SUPPLIED, R3]
     freeRead: false,
     awards: [{ name: "2025 Swoony Award, Novella Category", year: "2025" }], // [ARTIFACT] + [MEMORY LOG]
     formats: ["ebook", "paperback", "kindle-unlimited"], // [SPREADSHEET]
@@ -594,7 +660,10 @@ export const BOOKS = [
     bookType: null,
     hook:
       "Grace moved to New York to escape her past — not to share a cubicle with Christmas-obsessed Wesley. But when a Christmas Eve blizzard leaves them stranded together, his relentless holiday cheer starts breaking through her defenses … and making her wonder if it's finally safe to stop running.", // [ARTIFACT]
-    blurb: null,
+    microHook:
+      "She’s giving Grinch. He’s giving Buddy the Elf. And now they’re sharing a cubicle.", // [TYLER-SUPPLIED, R3] "Tiffany's Book Hooks.xlsx" — stored only, not displayed
+    blurb:
+      "Grace moved to New York to escape her past—especially her controlling ex.\n\nWesley is coping with the disappearance of his sister the only way he knows: excessive Christmas decorations.\n\nGrace, who feels more and more like the Grinch, is assigned to share Wesley’s cubicle, leaving them both in shock. When it seems like things couldn’t get worse, a Christmas Eve blizzard shuts down the city, including all flights home. Snowed in with her relentlessly cheerful coworker who channels Buddy the Elf a little too well, Grace can’t escape the lights, the laughter, or the inconvenient way he makes her feel safe again.\n\nAs Christmas magic fills the city and walls start to crumble, Wesley is determined to show Grace that the holidays—and love—aren’t something to fear. But Grace has to decide if she’s ready to stop running…and let Christmas work its magic.\n\nA cozy, clean holiday rom-com filled with forced proximity, office antics, found family, and big-city Christmas charm.", // [TYLER-SUPPLIED, R3] verbatim from the long-form blurb packet — introduces the name Wesley's disappeared sister's absence as his backstory (no name given), and confirms Grace's ex as "controlling" (consistent with, adds detail to, the existing hook)
     // [TYLER]: v3 now agrees with the previously-approved metadata — no conflict.
     tropes: ["Forced proximity", "Workplace romance", "Christmas romance"], // prior reconciliation pass, reconfirmed by [SPREADSHEET]
     keywordTropes: [
@@ -616,7 +685,7 @@ export const BOOKS = [
       alt: "A Holly Jolly Christmas Cubicle book cover by Tiffany Noelle Chacon and Sarah Ruth Hickner",
     }, // [ARTIFACT] — this image's own alt text is the one place "Sarah Ruth Hickner" (with middle name) appears; see PEOPLE.sarah note
     release: { date: null, year: "2025", status: "released" }, // [SPREADSHEET]
-    retail: [{ retailer: "bookfunnel", url: null }], // [SPREADSHEET]: "Available free on BookFunnel" — destination not recovered, not fabricated
+    retail: [{ retailer: "bookfunnel", url: "https://buy.bookfunnel.com/bobjudapku", access: "gated" }], // [TYLER-SUPPLIED, R3]: "free for subscribers" — a buy.bookfunnel.com subscriber-gated destination, not a direct download link like the other 3 free titles; CTA copy distinguishes this
     freeRead: true, // [SPREADSHEET]
     awards: [],
     formats: ["ebook", "paperback"], // [SPREADSHEET]

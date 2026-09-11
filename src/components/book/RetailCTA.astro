@@ -1,0 +1,69 @@
+---
+// [R3 ADDITION] New, purely additive shared component — not a modification of
+// any approved R2 file. Renders the primary purchase/read CTA for a book
+// detail page from its `retail` data, plus the required affiliate disclosure
+// for Amazon links only. Used by the 11 new R3 book detail pages. The
+// already-approved Promise You the Moon page intentionally does NOT use this
+// component (see that page's own comment) — its narrowly-scoped R3 edit
+// keeps its existing inline markup and adds the same disclosure text inline.
+//
+// Three CTA states, per Tyler's R3 decisions:
+//   - "amazon" / "preorder" retailer with a url  -> Amazon affiliate button,
+//     rel="sponsored", plus the exact required disclosure sentence beside it.
+//   - "bookfunnel" retailer, access "direct" (or unset) -> direct free-read
+//     button, no disclosure (not an Amazon link).
+//   - "bookfunnel" retailer, access "gated" -> subscriber-gated free-read
+//     button with distinct wording, no disclosure.
+// Falls back to a disabled placeholder, matching the R2 convention, if a
+// book has no usable retail entry (not expected for any R3 page, but kept
+// as a safety net rather than assuming data will always be present).
+export interface Props {
+  retail: { retailer: string; url: string | null; affiliate?: boolean; access?: "direct" | "gated" }[];
+}
+const { retail = [] } = Astro.props;
+
+const amazon = retail.find((r) => (r.retailer === "amazon" || r.retailer === "preorder") && r.url);
+const bookfunnel = retail.find((r) => r.retailer === "bookfunnel" && r.url);
+---
+
+<div class="retail-cta">
+  {
+    amazon ? (
+      <>
+        <a class="btn btn--secondary" href={amazon.url} target="_blank" rel="sponsored noopener noreferrer">
+          Buy on Amazon
+        </a>
+        <p class="retail-cta__disclosure">As an Amazon Associate I earn from qualifying purchases.</p>
+      </>
+    ) : bookfunnel ? (
+      <a class="btn btn--secondary" href={bookfunnel.url} target="_blank" rel="noopener noreferrer">
+        {bookfunnel.access === "gated" ? "Get It Free for Subscribers" : "Read Free on BookFunnel"}
+      </a>
+    ) : (
+      <span class="btn btn--secondary" aria-disabled="true">
+        Buy — link coming soon
+      </span>
+    )
+  }
+</div>
+
+<style>
+  .retail-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2xs);
+  }
+  .retail-cta [aria-disabled="true"] {
+    cursor: default;
+  }
+  .retail-cta [aria-disabled="true"]:hover {
+    background: transparent;
+    color: var(--color-ink);
+  }
+  .retail-cta__disclosure {
+    font-size: var(--step--1);
+    color: var(--color-muted);
+    max-width: 32ch;
+  }
+</style>
