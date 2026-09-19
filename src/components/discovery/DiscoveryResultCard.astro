@@ -1,0 +1,180 @@
+---
+// [R4 VISUAL REFINEMENT] Discovery-specific result card for Find Your Next
+// Read. Additive-only — does NOT replace or modify BookCard.astro, which
+// remains untouched everywhere else on the site. This card exists because
+// the discovery experience has different responsibilities than a catalog
+// card: it needs to show *why* a book matched, optional "Start Here"
+// context, and a free-read badge, in a leaner, more editorial shape than
+// BookCard's trope-pill-heavy layout.
+//
+// Every optional line (coauthor / microHook / match explanation / start-here
+// note / free-read badge) is always rendered in the DOM with a `hidden`
+// attribute driven by its prop, rather than conditionally omitted at build
+// time — this gives the client-side script in find-your-next-read/index.astro
+// stable elements to toggle/rewrite on every re-render, without ever
+// generating new markup shapes at runtime.
+import Cover from "../shared/Cover.astro";
+
+export interface Props {
+  id: string;
+  variant: "feature" | "grid";
+  spotlight?: boolean;
+  title: string;
+  kicker: string;
+  startHere?: boolean;
+  coauthor?: string | null;
+  microHook?: string | null;
+  matchLabels?: string[];
+  startHereNote?: string | null;
+  freeRead?: boolean;
+  cover: { image: string | null; alt: string | null };
+  accentVar: string;
+  accentTextVar: string;
+  href: string;
+}
+
+const {
+  id,
+  variant,
+  spotlight = false,
+  title,
+  kicker,
+  startHere = false,
+  coauthor = null,
+  microHook = null,
+  matchLabels = [],
+  startHereNote = null,
+  freeRead = false,
+  cover,
+  accentVar,
+  accentTextVar,
+  href,
+} = Astro.props;
+
+const classes = ["dr-card", variant === "feature" ? "dr-card--feature" : "dr-card--grid", spotlight ? "dr-card--spotlight" : null]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<article class={classes} id={id} style={`--_accent: ${accentVar}; --_accent-text: ${accentTextVar}`}>
+  <div class="dr-card__cover">
+    <Cover image={cover.image} alt={cover.alt} placeholderTitle={title} accentVar={accentVar} />
+  </div>
+  <div class="dr-card__body">
+    <p class="dr-card__kicker">
+      {kicker}
+      {startHere && <span class="dr-card__starthere">· Start Here</span>}
+    </p>
+    <h3 class="dr-card__title">{title}</h3>
+    <p class="dr-card__coauthor" hidden={!coauthor}>{coauthor}</p>
+    <p class="dr-card__hook" hidden={!microHook}>{microHook}</p>
+    <p class="dr-card__match" hidden={!matchLabels || matchLabels.length === 0}>
+      <span class="dr-card__match-label">Matches </span><span class="dr-card__match-text">{matchLabels?.join(", ")}</span>
+    </p>
+    <p class="dr-card__note" hidden={!startHereNote}>{startHereNote}</p>
+    <div class="dr-card__meta">
+      <span class="badge dr-card__badge" hidden={!freeRead}>Free Read</span>
+    </div>
+    <a class="btn btn--quiet dr-card__cta" href={href}>
+      Learn More <span class="btn-arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
+</article>
+
+<style>
+  .dr-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  .dr-card--grid {
+    width: 100%;
+    max-width: 18rem;
+  }
+  .dr-card--feature {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-2xl);
+    width: 100%;
+  }
+  .dr-card--feature .dr-card__cover {
+    width: 15rem;
+    flex-shrink: 0;
+  }
+  .dr-card--spotlight {
+    background: color-mix(in srgb, var(--_accent, var(--color-tiffany)) 8%, transparent);
+    border-radius: var(--radius-lg);
+    padding: var(--space-sm);
+  }
+  .dr-card__kicker {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--_accent-text);
+  }
+  .dr-card__starthere {
+    color: var(--color-ink);
+    opacity: 0.7;
+  }
+  .dr-card__title {
+    font-style: italic;
+    font-size: var(--step-1);
+    margin-top: var(--space-3xs);
+  }
+  .dr-card--feature .dr-card__title {
+    font-size: var(--step-3);
+  }
+  .dr-card__coauthor {
+    font-size: var(--step--1);
+    color: var(--_accent-text);
+    font-weight: 600;
+    margin-top: var(--space-3xs);
+  }
+  .dr-card__hook {
+    font-size: var(--step--1);
+    color: var(--color-muted);
+    margin-top: var(--space-2xs);
+  }
+  .dr-card--feature .dr-card__hook {
+    font-size: var(--step-0);
+    max-width: 52ch;
+    margin-top: var(--space-sm);
+  }
+  .dr-card__match {
+    font-size: var(--step--1);
+    margin-top: var(--space-2xs);
+    color: var(--color-ink);
+  }
+  .dr-card__match-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--_accent-text);
+  }
+  .dr-card__note {
+    font-size: var(--step--1);
+    font-style: italic;
+    color: var(--color-muted);
+    margin-top: var(--space-2xs);
+  }
+  .dr-card__meta {
+    margin-top: var(--space-2xs);
+  }
+  .dr-card__badge {
+    color: var(--color-gold-text);
+  }
+  .dr-card__cta {
+    margin-top: var(--space-xs);
+    align-self: flex-start;
+  }
+  @media (max-width: 700px) {
+    .dr-card--feature {
+      flex-direction: column;
+    }
+    .dr-card--feature .dr-card__cover {
+      width: 12rem;
+    }
+  }
+</style>

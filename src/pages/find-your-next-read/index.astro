@@ -1,0 +1,617 @@
+---
+// [R4 NEW PAGE, visual refinement pass] Find Your Next Read — catalog-only
+// discovery tool. Canonical URL: /find-your-next-read/ (folder + index.astro,
+// matching the trailing-slash convention already used by /books/ and
+// /series/*).
+//
+// Architecture notes (see Find-Your-Next-Read-Plan.md and
+// Find-Your-Next-Read-Taxonomy.md for the full approved design history, and
+// R4-Report.md / this file's own comments for the visual-refinement pass):
+// - catalog.js is NOT modified. Matching algorithm and taxonomy are
+//   UNCHANGED in this pass — all discovery mapping tables still live in
+//   src/data/discoveryTaxonomy.js, feature-local.
+// - BookCard.astro is NOT modified and is no longer used on this page at
+//   all (per Tyler's visual-refinement request). Results and the "Start
+//   free" row now use a new, additive DiscoveryResultCard.astro
+//   (src/components/discovery/), purpose-built for this feature's leaner
+//   needs (why-it-matched, Start Here context, free-read badge) rather than
+//   forcing BookCard's trope-pill-heavy catalog-card shape into this role.
+//   No other page references DiscoveryResultCard, and BookCard's behavior
+//   everywhere else on the site is completely unaffected.
+// - Every book's own detail page continues to render its exact, unmerged
+//   `tropes` values verbatim (unchanged) — the reader-facing merges in
+//   discoveryTaxonomy.js are discovery labels only, used exclusively here.
+// - Book Three is excluded (no blurb/cover/tropes — still unusable, per R3).
+// - Scoring/matching runs entirely client-side (static site, no server).
+//   The scoring algorithm, weights, hard constraints, and tie behavior are
+//   IDENTICAL to the functionally-approved version — only how results are
+//   laid out and how many "Also Like" cards are shown changed in this pass.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import DiscoveryResultCard from "../../components/discovery/DiscoveryResultCard.astro";
+import Newsletter from "../../components/shared/Newsletter.astro";
+import { BOOKS, getSeriesBySlug } from "../../data/catalog.js";
+import { TROPE_CHOICES, SETTING_CHOICES, SPORT_CHOICES, EXTRA_CHOICES, WEIGHTS } from "../../data/discoveryTaxonomy.js";
+
+const usableBooks = BOOKS.filter((b) => b.slug !== "book-three");
+
+const seriesAccent = {
+  "love-in-starlight-valley": { accent: "var(--series-starlight-valley)", accentText: "var(--series-starlight-valley-text)" },
+  "sports-in-the-sunshine-state": { accent: "var(--series-sunshine-state)", accentText: "var(--series-sunshine-state-text)" },
+  "equestrian-dreams": { accent: "var(--series-equestrian-dreams)", accentText: "var(--series-equestrian-dreams-text)" },
+};
+const standaloneAccent = { accent: "var(--color-gold)", accentText: "var(--color-gold-text)" };
+
+// Verified "Start Here" book per series — read directly from
+// `position.label` containing "Start Here" (not assumed from order).
+const seriesStart = {};
+usableBooks.forEach((b) => {
+  if (b.series?.position?.isPrequel && b.series.position.label.includes("Start Here")) {
+    seriesStart[b.series.slug] = { slug: b.slug, title: b.title };
+  }
+});
+
+function discoveryCardProps(book, idPrefix, variant) {
+  const acc = book.series ? seriesAccent[book.series.slug] : standaloneAccent;
+  const isPrequel = Boolean(book.series?.position?.isPrequel);
+  const kicker = book.series
+    ? isPrequel
+      ? book.series.position.label.replace(" · Start Here", "")
+      : book.series.position.label
+    : book.collaboration;
+  const coauthorPerson = book.authors.find((a) => a.slug !== "tiffany-noelle-chacon");
+  return {
+    id: `${idPrefix}-${book.slug}`,
+    variant,
+    kicker,
+    startHere: isPrequel,
+    title: book.title,
+    coauthor: coauthorPerson ? `Co-written with ${coauthorPerson.name}` : null,
+    microHook: book.microHook || book.hook,
+    matchLabels: [],
+    startHereNote: null,
+    freeRead: book.freeRead,
+    cover: book.cover,
+    accentVar: acc.accent,
+    accentTextVar: acc.accentText,
+    href: `/books/${book.slug}/`,
+  };
+}
+
+// Minimal client-side dataset — only what the matching engine needs.
+// UNCHANGED from the functionally-approved version.
+const clientBooks = usableBooks.map((b) => ({
+  slug: b.slug,
+  tropes: b.tropes,
+  sport: b.sport,
+  setting: b.setting,
+  freeRead: b.freeRead,
+  seriesSlug: b.series?.slug ?? null,
+  isPrequel: Boolean(b.series?.position?.isPrequel),
+  positionLabel: b.series?.position?.label ?? null,
+  seriesTitle: b.series ? getSeriesBySlug(b.series.slug).title : null,
+}));
+
+// Default "start here" row: the 4 free reads (3 series prequels + 1 free standalone).
+const startHereBooks = usableBooks.filter((b) => b.freeRead);
+---
+
+<BaseLayout
+  title="Find Your Next Read — Tiffany Noelle Chacon"
+  description="Answer a few quick, optional questions and find your next clean, kisses-only romance from Tiffany Noelle Chacon's full catalog."
+>
+  <section class="section fynr-intro">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">Find Your Next Read</p>
+      <h1 class="fynr-intro__headline">Which book should you read next?</h1>
+      <p class="fynr-intro__body">
+        A few quick, optional picks — nothing required. Choose as many or as few as you like from Tiffany's own catalog, and we'll surface your best matches.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--tight section--surface fynr-chooser" aria-labelledby="fynr-chooser-heading">
+    <div class="wrap wrap--narrow">
+      <h2 class="visually-hidden" id="fynr-chooser-heading">Choose what you're in the mood for</h2>
+
+      <div class="fynr-group">
+        <p class="fynr-group__label">What kind of romance are you craving?</p>
+        <ul class="fynr-chips" role="group" aria-label="Romance trope preferences">
+          {TROPE_CHOICES.map((c) => (
+            <li><button type="button" class="discovery-chip" data-group="trope" data-id={c.id} aria-pressed="false">{c.label}</button></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="fynr-group">
+        <p class="fynr-group__label">Where do you want to escape to?</p>
+        <ul class="fynr-chips" role="group" aria-label="Setting preferences">
+          {SETTING_CHOICES.map((c) => (
+            <li><button type="button" class="discovery-chip" data-group="setting" data-id={c.id} aria-pressed="false">{c.label}</button></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="fynr-group">
+        <p class="fynr-group__label">Any sport on the page?</p>
+        <ul class="fynr-chips" role="group" aria-label="Sport preferences">
+          {SPORT_CHOICES.map((c) => (
+            <li><button type="button" class="discovery-chip" data-group="sport" data-id={c.id} aria-pressed="false">{c.label}</button></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="fynr-group">
+        <p class="fynr-group__label">Anything else you're craving?</p>
+        <ul class="fynr-chips" role="group" aria-label="Free read, standalone, and series-start preferences">
+          {EXTRA_CHOICES.map((c) => (
+            <li><button type="button" class="discovery-chip" data-group="extra" data-id={c.id} aria-pressed="false">{c.label}</button></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="fynr-chooser__actions">
+        <button type="button" class="btn btn--secondary" id="fynr-clear" hidden>Clear selections</button>
+        <button type="button" class="btn btn--quiet" id="fynr-surprise">Surprise Me <span class="btn-arrow" aria-hidden="true">→</span></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section fynr-results" aria-labelledby="fynr-results-heading">
+    <div class="wrap">
+      <h2 class="visually-hidden" id="fynr-results-heading">Your Matches</h2>
+      <div id="fynr-results-live" aria-live="polite">
+        <div id="fynr-default-prompt" class="fynr-default-prompt">
+          <p>Pick a few things above and your matches will appear here — or explore our free starter reads below.</p>
+          <a class="btn--quiet" href="#fynr-start-here">Jump to free starter reads <span class="btn-arrow" aria-hidden="true">→</span></a>
+        </div>
+        <div id="fynr-results-content" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight section--surface fynr-starthere" id="fynr-start-here" aria-labelledby="fynr-starthere-heading">
+    <div class="wrap">
+      <p class="eyebrow">New Here?</p>
+      <h2 class="fynr-starthere__heading" id="fynr-starthere-heading">Start free, right now</h2>
+      <p class="fynr-starthere__body">Every series has a free entry point, plus one free standalone — no commitment required.</p>
+      <ul class="fynr-starthere__grid hshelf">
+        {startHereBooks.map((b) => (
+          <li><DiscoveryResultCard {...discoveryCardProps(b, "starthere", "grid")} /></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Newsletter />
+
+  <!-- Hidden card pool: one DiscoveryResultCard per usable book, in both
+       variants (grid + feature), so the client script can clone the right
+       shape for the current results layout without ever building new
+       markup shapes at runtime. -->
+  <div id="fynr-card-pool" hidden>
+    {usableBooks.map((b) => <DiscoveryResultCard {...discoveryCardProps(b, "pool-grid", "grid")} />)}
+    {usableBooks.map((b) => <DiscoveryResultCard {...discoveryCardProps(b, "pool-feature", "feature")} />)}
+  </div>
+</BaseLayout>
+
+<script
+  define:vars={{
+    fynrBooks: clientBooks,
+    fynrSeriesStart: seriesStart,
+    fynrTropeChoices: TROPE_CHOICES,
+    fynrSettingChoices: SETTING_CHOICES,
+    fynrSportChoices: SPORT_CHOICES,
+    fynrWeights: WEIGHTS,
+  }}
+>
+  const books = fynrBooks;
+  const seriesStart = fynrSeriesStart;
+  const tropeChoices = fynrTropeChoices;
+  const settingChoices = fynrSettingChoices;
+  const sportChoices = fynrSportChoices;
+  const weights = fynrWeights;
+
+  const ALSO_LIKE_CAP = 3; // presentation cap only — see render(); does not touch scoring/order
+
+  const defaultPrompt = document.getElementById("fynr-default-prompt");
+  const resultsContent = document.getElementById("fynr-results-content");
+  const clearBtn = document.getElementById("fynr-clear");
+  const surpriseBtn = document.getElementById("fynr-surprise");
+
+  const selected = { trope: new Set(), setting: new Set(), sport: new Set(), extra: new Set() };
+
+  function hasAnySelection() {
+    return selected.trope.size || selected.setting.size || selected.sport.size || selected.extra.size;
+  }
+  function hasPreferenceSelection() {
+    return selected.trope.size || selected.setting.size || selected.sport.size;
+  }
+
+  function cloneCard(slug, variant) {
+    const master = document.getElementById(`pool-${variant}-${slug}`);
+    if (!master) return null;
+    const clone = master.cloneNode(true);
+    clone.removeAttribute("id");
+    return clone;
+  }
+
+  function setMatchInfo(cardEl, labels) {
+    const p = cardEl.querySelector(".dr-card__match");
+    const span = cardEl.querySelector(".dr-card__match-text");
+    if (!p || !span) return;
+    if (labels && labels.length > 0) {
+      span.textContent = labels.join(", ");
+      p.hidden = false;
+    } else {
+      p.hidden = true;
+    }
+  }
+
+  function setNote(cardEl, text) {
+    const p = cardEl.querySelector(".dr-card__note");
+    if (!p) return;
+    if (text) {
+      p.textContent = text;
+      p.hidden = false;
+    } else {
+      p.hidden = true;
+    }
+  }
+
+  function seriesNoteFor(book) {
+    if (!book.seriesSlug || book.isPrequel) return null;
+    const start = seriesStart[book.seriesSlug];
+    if (!start || start.slug === book.slug) return null;
+    return `${book.positionLabel} in ${book.seriesTitle} — Start Here: ${start.title}`;
+  }
+
+  // UNCHANGED scoring engine (weights, hard constraints, tie handling) —
+  // this visual-refinement pass does not touch matching behavior.
+  function computeResults() {
+    let eligible = books.filter((b) => {
+      if (selected.extra.has("free-read") && !b.freeRead) return false;
+      if (selected.extra.has("standalone") && b.seriesSlug !== null) return false;
+      return true;
+    });
+    if (eligible.length === 0) return { state: "zero-eligible" };
+
+    const scored = eligible.map((b) => {
+      let score = 0;
+      const matchedLabels = [];
+      tropeChoices
+        .filter((c) => selected.trope.has(c.id))
+        .forEach((c) => {
+          if (c.values.some((v) => b.tropes.includes(v))) {
+            score += weights.trope;
+            matchedLabels.push(c.label);
+          }
+        });
+      settingChoices
+        .filter((c) => selected.setting.has(c.id))
+        .forEach((c) => {
+          if (c.values.includes(b.setting)) {
+            score += weights.setting;
+            matchedLabels.push(c.label);
+          }
+        });
+      sportChoices
+        .filter((c) => selected.sport.has(c.id))
+        .forEach((c) => {
+          if (b.sport && c.values.includes(b.sport)) {
+            score += weights.sport;
+            matchedLabels.push(c.label);
+          }
+        });
+      if (selected.extra.has("start-series") && b.isPrequel) {
+        score += 1;
+        matchedLabels.push("Start a Series");
+      }
+      return { book: b, score, matchedLabels };
+    });
+
+    const positive = scored.filter((s) => s.score > 0);
+    if (positive.length === 0) {
+      if (hasPreferenceSelection()) {
+        return { state: "no-preference-match", eligible };
+      }
+      return { state: "matches", best: eligible.map((b) => ({ book: b, matchedLabels: [] })), also: [] };
+    }
+    const maxScore = Math.max(...positive.map((s) => s.score));
+    const best = positive.filter((s) => s.score === maxScore);
+    const also = positive.filter((s) => s.score < maxScore).sort((a, b) => b.score - a.score);
+    return { state: "matches", best, also };
+  }
+
+  function columnsClassFor(count) {
+    if (count <= 1) return "dr-grid--feature";
+    if (count === 2) return "dr-grid--cols-2";
+    if (count === 3) return "dr-grid--cols-3";
+    return "dr-grid--cols-auto";
+  }
+
+  function renderCardGroup(container, items, { forceVariant } = {}) {
+    const grid = document.createElement("ul");
+    grid.className = `dr-grid ${columnsClassFor(items.length)}`;
+    items.forEach(({ book, matchedLabels }) => {
+      const variant = forceVariant || (items.length === 1 ? "feature" : "grid");
+      const card = cloneCard(book.slug, variant);
+      if (!card) return;
+      setMatchInfo(card, matchedLabels || []);
+      setNote(card, seriesNoteFor(book));
+      if (variant === "feature") card.classList.add("dr-card--spotlight");
+      const li = document.createElement("li");
+      li.appendChild(card);
+      grid.appendChild(li);
+    });
+    container.appendChild(grid);
+  }
+
+  function render() {
+    resultsContent.innerHTML = "";
+    clearBtn.hidden = !hasAnySelection();
+
+    if (!hasAnySelection()) {
+      defaultPrompt.hidden = false;
+      resultsContent.hidden = true;
+      return;
+    }
+    defaultPrompt.hidden = true;
+    resultsContent.hidden = false;
+
+    const result = computeResults();
+
+    if (result.state === "zero-eligible") {
+      const p = document.createElement("p");
+      p.className = "fynr-empty-state";
+      p.textContent = "No books match that combination of Free Read and Standalone. Try removing one of those picks.";
+      resultsContent.appendChild(p);
+      return;
+    }
+
+    if (result.state === "no-preference-match") {
+      const heading = document.createElement("h3");
+      heading.className = "fynr-tier-heading";
+      heading.textContent = "No exact match for that combination — but these are eligible:";
+      resultsContent.appendChild(heading);
+      renderCardGroup(
+        resultsContent,
+        result.eligible.map((book) => ({ book, matchedLabels: [] })),
+        { forceVariant: "grid" }
+      );
+      return;
+    }
+
+    const bestHeading = document.createElement("h3");
+    bestHeading.className = "fynr-tier-heading";
+    bestHeading.textContent = result.best.length > 1 ? "Your Best Matches" : "Your Best Match";
+    resultsContent.appendChild(bestHeading);
+    renderCardGroup(resultsContent, result.best);
+
+    // Presentation cap only — does not alter scoring or the underlying
+    // `also` order, which is already sorted by score (ties in catalog order).
+    const cappedAlso = result.also.slice(0, ALSO_LIKE_CAP);
+    if (cappedAlso.length > 0) {
+      const alsoHeading = document.createElement("h3");
+      alsoHeading.className = "fynr-tier-heading fynr-tier-heading--secondary";
+      alsoHeading.textContent = "You Might Also Like";
+      resultsContent.appendChild(alsoHeading);
+      renderCardGroup(resultsContent, cappedAlso, { forceVariant: "grid" });
+    }
+  }
+
+  document.querySelectorAll(".discovery-chip").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const group = btn.dataset.group;
+      const id = btn.dataset.id;
+      const set = selected[group];
+      const pressed = btn.getAttribute("aria-pressed") === "true";
+      if (pressed) {
+        set.delete(id);
+        btn.setAttribute("aria-pressed", "false");
+      } else {
+        set.add(id);
+        btn.setAttribute("aria-pressed", "true");
+      }
+      render();
+    });
+  });
+
+  clearBtn.addEventListener("click", () => {
+    document.querySelectorAll(".discovery-chip").forEach((btn) => btn.setAttribute("aria-pressed", "false"));
+    Object.values(selected).forEach((set) => set.clear());
+    render();
+  });
+
+  surpriseBtn.addEventListener("click", () => {
+    const pick = books[Math.floor(Math.random() * books.length)];
+    defaultPrompt.hidden = true;
+    resultsContent.hidden = false;
+    resultsContent.innerHTML = "";
+    const heading = document.createElement("h3");
+    heading.className = "fynr-tier-heading";
+    heading.textContent = "Your Random Pick";
+    resultsContent.appendChild(heading);
+    const note = document.createElement("p");
+    note.className = "fynr-surprise-note";
+    note.textContent = "Chosen at random from the full catalog — not a relevance ranking.";
+    resultsContent.appendChild(note);
+    renderCardGroup(resultsContent, [{ book: pick, matchedLabels: [] }], { forceVariant: "feature" });
+  });
+
+  render();
+</script>
+
+<style>
+  .fynr-intro {
+    padding-bottom: var(--space-lg);
+  }
+  .fynr-intro__headline {
+    font-style: italic;
+    font-size: var(--step-5);
+    margin-top: var(--space-xs);
+  }
+  .fynr-intro__body {
+    font-size: var(--step-1);
+    color: var(--color-muted);
+    max-width: 50ch;
+    margin-top: var(--space-md);
+  }
+
+  .fynr-group {
+    padding-block: var(--space-lg);
+    border-bottom: var(--border-hairline);
+  }
+  .fynr-group:first-child {
+    padding-top: 0;
+  }
+  .fynr-group:last-of-type {
+    border-bottom: none;
+  }
+  .fynr-group__label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: var(--step-2);
+    color: var(--color-ink);
+    margin-bottom: var(--space-sm);
+  }
+  .fynr-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  .discovery-chip {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: var(--step--1);
+    padding: 0.55em 1em;
+    min-height: 44px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+    background: var(--color-white);
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-editorial), color var(--duration-fast) var(--ease-editorial), border-color var(--duration-fast) var(--ease-editorial);
+  }
+  .discovery-chip:hover {
+    border-color: var(--color-tiffany-text);
+    color: var(--color-tiffany-text);
+  }
+  .discovery-chip[aria-pressed="true"] {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-bg);
+  }
+  .discovery-chip:focus-visible {
+    outline: 2px solid var(--color-tiffany-text);
+    outline-offset: 2px;
+  }
+
+  .fynr-chooser__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+  }
+
+  .fynr-results {
+    padding-block: var(--space-lg);
+  }
+  .fynr-default-prompt {
+    text-align: center;
+    max-width: 40ch;
+    margin-inline: auto;
+    color: var(--color-muted);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    align-items: center;
+  }
+  .fynr-starthere__heading {
+    font-style: italic;
+    font-size: var(--step-3);
+    margin-top: var(--space-2xs);
+  }
+  .fynr-starthere__body {
+    color: var(--color-muted);
+    max-width: 46ch;
+    margin-top: var(--space-2xs);
+    margin-bottom: var(--space-lg);
+  }
+  .fynr-starthere__grid {
+    align-items: flex-start;
+  }
+  .fynr-starthere__grid :global(.dr-card--grid) {
+    width: 13rem;
+  }
+
+  #fynr-card-pool {
+    display: none;
+  }
+</style>
+
+<!--
+  IMPORTANT: this second style block is intentionally `is:global`. Astro's
+  scoped CSS works by stamping a `data-astro-cid-*` attribute onto every
+  element the component's own template renders, and compiling each selector
+  above to require that attribute. Elements created at runtime via
+  `document.createElement` (the results grid wrapper, tier headings, and
+  empty/surprise-state text in the <script> above) never receive that
+  attribute, so a scoped rule targeting them would silently never match —
+  confirmed via computed-style inspection during QA (display stayed `block`
+  and font-style stayed `normal` even though the scoped rule was present in
+  source). Card-level styles are unaffected by this and stay in the normal
+  scoped block above, because every card is cloned from a real, Astro-rendered
+  node in the hidden pool via cloneNode(true), which preserves the
+  data-astro-cid attribute.
+-->
+<style is:global>
+  .fynr-tier-heading {
+    font-style: italic;
+    font-size: var(--step-2);
+    margin-bottom: var(--space-md);
+  }
+  .fynr-tier-heading--secondary {
+    margin-top: var(--space-xl);
+  }
+  .fynr-empty-state,
+  .fynr-surprise-note {
+    color: var(--color-muted);
+    max-width: 48ch;
+  }
+  .fynr-surprise-note {
+    margin-bottom: var(--space-md);
+  }
+
+  .dr-grid {
+    display: grid;
+    gap: var(--space-xl);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .dr-grid--feature {
+    grid-template-columns: 1fr;
+  }
+  .dr-grid--cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 18rem));
+    justify-content: center;
+  }
+  .dr-grid--cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 18rem));
+    justify-content: center;
+  }
+  .dr-grid--cols-auto {
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 18rem));
+    justify-content: center;
+  }
+  @media (max-width: 780px) {
+    .dr-grid--cols-2,
+    .dr-grid--cols-3 {
+      grid-template-columns: 1fr;
+      justify-content: initial;
+    }
+  }
+</style>
