@@ -1,0 +1,58 @@
+---
+// [R6.1 NEW PAGE] Contact — the old site had /contact-me/; the new site had
+// no contact mechanism at all until now, a real gap (flagged in
+// R6-Launch-Readiness-Report.md and R6-Redirect-Map.md). Deliberately
+// restrained per Tyler's instruction: no contact form, no backend — a
+// direct mailto link is enough for V1. Reuses the same simple prose-page
+// pattern as privacy-policy/terms (BaseLayout + .wrap wrap--narrow), not a
+// new layout or design system.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const CONTACT_EMAIL = "tiffanynoellechacon@gmail.com";
+---
+
+<BaseLayout
+  title="Contact — Tiffany Noelle Chacon"
+  description="Get in touch with Tiffany Noelle Chacon — reader questions, podcast and media inquiries, speaking opportunities, and business inquiries."
+>
+  <section class="section contact">
+    <div class="wrap wrap--narrow contact__content">
+      <p class="eyebrow">Get in Touch</p>
+      <h1>Contact</h1>
+      <p>
+        Have a question about the books, a reaction you want to share, or a project you'd like to loop Tiffany in
+        on? She reads every message herself and will get back to you as soon as she can.
+      </p>
+      <a class="btn btn--primary contact__email" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+      <p class="contact__note">
+        This inbox covers reader questions, podcast guest and media inquiries, speaking opportunities, and general
+        business inquiries.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    padding-block: var(--space-2xl);
+  }
+  .contact__content h1 {
+    font-style: italic;
+    font-size: var(--step-4);
+    margin-block: var(--space-2xs) var(--space-md);
+  }
+  .contact__content p {
+    color: var(--color-ink);
+    max-width: 60ch;
+    margin-bottom: var(--space-lg);
+  }
+  .contact__email {
+    display: inline-flex;
+    margin-bottom: var(--space-md);
+  }
+  .contact__note {
+    color: var(--color-muted);
+    font-size: var(--step--1);
+    max-width: 52ch;
+  }
+</style>

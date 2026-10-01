@@ -1,0 +1,43 @@
+---
+// [R5 ADDITION] Reusable "where to go next" treatment for the Reading Room —
+// used for hub → article, article → hub, and article → Find Your Next Read
+// links (Part 12), and built generically enough to carry future guide-to-
+// guide links as the Reading Room grows. Deliberately plain (a labeled list,
+// not another card grid) so it doesn't compete visually with BookCard /
+// DiscoveryResultCard elsewhere on the site.
+export interface Props {
+  title?: string;
+}
+const { title = "Continue Reading" } = Astro.props;
+
+export interface RelatedItem {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  href: string;
+  cta?: string;
+}
+---
+
+<nav class="related" aria-label={title}>
+  <p class="eyebrow related__eyebrow">{title}</p>
+  <ul class="related__list">
+    <slot />
+  </ul>
+</nav>
+
+<style>
+  .related {
+    margin-block: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: var(--border-hairline);
+  }
+  .related__eyebrow {
+    margin-bottom: var(--space-sm);
+  }
+  .related__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+</style>

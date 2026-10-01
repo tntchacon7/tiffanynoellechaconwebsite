@@ -1,0 +1,147 @@
+---
+// [R5 ADDITION] Shared shell for Clean Romance Reading Room long-form guides
+// (starting with What Is Clean Romance?). Wraps BaseLayout — does not
+// replace or duplicate it — and adds the editorial furniture every guide
+// needs: breadcrumbs, an article header (eyebrow/H1/dek/byline), and a
+// typography scope for the slotted body copy. Kept deliberately small: this
+// is the smallest layout that serves R5, built so future Reading Room guides
+// (Part 13's roadmap) can reuse it without each one re-solving article
+// typography from scratch.
+//
+// No fabricated publish date is shown anywhere here — this site has no
+// existing "published on" convention, and inventing one would violate the
+// project's own no-fake-metadata rule (see R5-Report.md for the same note
+// re: Article structured data).
+import BaseLayout from "./BaseLayout.astro";
+import Breadcrumbs from "../components/guide/Breadcrumbs.astro";
+
+export interface Props {
+  title: string; // <title> tag text
+  description: string;
+  eyebrow: string;
+  heading: string; // the page's single H1 (may differ slightly from <title>)
+  dek?: string; // one- or two-sentence standfirst under the H1
+  breadcrumbs: { label: string; href?: string }[];
+  byline?: string;
+  canonicalPath?: string;
+  ogImage?: string;
+  structuredData?: Record<string, unknown>;
+}
+const {
+  title,
+  description,
+  eyebrow,
+  heading,
+  dek,
+  breadcrumbs,
+  byline = "By Tiffany Noelle Chacon",
+  canonicalPath,
+  ogImage,
+  structuredData,
+} = Astro.props;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogType="article"
+  canonicalPath={canonicalPath}
+  ogImage={ogImage}
+  structuredData={structuredData}
+>
+  <Breadcrumbs items={breadcrumbs} />
+
+  <header class="guide-header">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1 class="guide-header__title">{heading}</h1>
+      {dek && <p class="guide-header__dek">{dek}</p>}
+      <p class="guide-header__byline">{byline}</p>
+    </div>
+  </header>
+
+  <div class="wrap wrap--narrow guide-prose">
+    <slot />
+  </div>
+</BaseLayout>
+
+<style>
+  .guide-header {
+    padding-block: var(--space-lg) var(--space-md);
+  }
+  .guide-header__title {
+    font-size: var(--step-4);
+    max-width: 24ch;
+  }
+  .guide-header__dek {
+    margin-top: var(--space-md);
+    font-size: var(--step-1);
+    color: var(--color-muted);
+    max-width: 46ch;
+  }
+  .guide-header__byline {
+    margin-top: var(--space-md);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-tiffany-text);
+  }
+
+  .guide-prose {
+    padding-block: var(--space-lg) var(--space-2xl);
+  }
+  .guide-prose :global(h2) {
+    font-size: var(--step-3);
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-sm);
+  }
+  .guide-prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .guide-prose :global(h3) {
+    font-size: var(--step-1);
+    font-style: italic;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-xs);
+    color: var(--color-tiffany-text);
+  }
+  .guide-prose :global(p) {
+    margin-block: var(--space-md);
+    max-width: 68ch;
+  }
+  .guide-prose :global(ul),
+  .guide-prose :global(ol) {
+    margin-block: var(--space-md);
+    padding-left: 1.25em;
+    max-width: 68ch;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  .guide-prose :global(ul) {
+    list-style: disc;
+  }
+  .guide-prose :global(ol) {
+    list-style: decimal;
+  }
+  .guide-prose :global(li) {
+    line-height: var(--leading-normal);
+  }
+  .guide-prose :global(strong) {
+    color: var(--color-ink);
+  }
+  .guide-prose :global(a) {
+    color: var(--color-tiffany-text);
+    text-decoration-color: color-mix(in srgb, var(--color-tiffany-text) 40%, transparent);
+  }
+  .guide-prose :global(a:hover) {
+    color: var(--color-rose-text);
+  }
+
+  @media (max-width: 560px) {
+    .guide-header__title {
+      font-size: var(--step-3);
+    }
+  }
+</style>

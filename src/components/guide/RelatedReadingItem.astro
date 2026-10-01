@@ -1,0 +1,78 @@
+---
+// [R5 ADDITION] A single row inside <RelatedReading>. Split from the parent
+// so each link keeps its own title/description/CTA markup without the
+// parent needing to know each item's shape ahead of time.
+export interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  href: string;
+  cta?: string;
+}
+const { eyebrow, title, description, href, cta = "Read more" } = Astro.props;
+---
+
+<li class="related-item">
+  <a class="related-item__link" href={href}>
+    <span class="related-item__text">
+      {eyebrow && <span class="related-item__eyebrow">{eyebrow}</span>}
+      <span class="related-item__title">{title}</span>
+      {description && <span class="related-item__desc">{description}</span>}
+    </span>
+    <span class="related-item__cta">
+      {cta} <span aria-hidden="true">→</span>
+    </span>
+  </a>
+</li>
+
+<style>
+  .related-item__link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-md);
+    text-decoration: none;
+    color: inherit;
+    padding-block: var(--space-2xs);
+  }
+  .related-item__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+  }
+  .related-item__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-tiffany-text);
+  }
+  .related-item__title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+  }
+  .related-item__desc {
+    color: var(--color-muted);
+    font-size: var(--step--1);
+    max-width: 50ch;
+  }
+  .related-item__cta {
+    flex-shrink: 0;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: var(--step--1);
+    color: var(--color-tiffany-text);
+    white-space: nowrap;
+  }
+  .related-item__link:hover .related-item__cta {
+    color: var(--color-rose-text);
+  }
+  @media (max-width: 560px) {
+    .related-item__link {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-2xs);
+    }
+  }
+</style>

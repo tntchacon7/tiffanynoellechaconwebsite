@@ -1,0 +1,80 @@
+---
+// Base page shell. Recovered structure: skip-link -> header -> <main id="main"> -> footer
+// (see Recovery-Inventory-Report.md Section 1.2). Font loading: the 5
+// @font-face rules (Newsreader normal/italic, Work Sans, IBM Plex Mono
+// 400/500) are self-hosted from /fonts/*.woff2, extracted byte-for-byte
+// from the base64 data: URIs embedded in every recovered Artifact's own
+// <style> block — see src/styles/tokens.css. No Google Fonts CDN link is
+// used; nothing needed substituting.
+import SiteHeader from "../components/layout/SiteHeader.astro";
+import SiteFooter from "../components/layout/SiteFooter.astro";
+import "../styles/tokens.css";
+import "../styles/global.css";
+
+// [R5 ADDITION] Optional, backward-compatible SEO props. Every existing call
+// site keeps working unchanged (all new props are optional); adding these
+// gives every page — old and new — an automatic, correct canonical URL and
+// baseline Open Graph tags, computed from `Astro.site` (astro.config.mjs)
+// and the page's own route, with no per-page wiring required. Pages that
+// need something more specific (an article's OG type, a dedicated share
+// image, or Article structured data) can opt in via the extra props below;
+// nothing is fabricated for pages that don't supply them.
+export interface Props {
+  title: string;
+  description?: string;
+  currentSeries?: "love-in-starlight-valley" | "sports-in-the-sunshine-state" | "equestrian-dreams";
+  canonicalPath?: string; // override the auto-derived canonical path, e.g. for a paginated view
+  ogType?: "website" | "article";
+  ogImage?: string; // root-relative path, e.g. "/images/author/headshot-secondary.jpg"
+  structuredData?: Record<string, unknown>; // a single JSON-LD object, rendered as-is
+}
+const { title, description, currentSeries, canonicalPath, ogType = "website", ogImage, structuredData } = Astro.props;
+
+const canonicalURL = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
+const ogImageURL = ogImage ? new URL(ogImage, Astro.site).toString() : null;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- [R6 ADDITION] Favicon/site icons — no icon existed anywhere on the
+         site before R6 (every page's browser tab showed the generic blank
+         icon, and every page logged a 404 for the browser's automatic
+         /favicon.ico request). This is a minimal, functional monogram (the
+         site's own Tiffany Blue token + the same serif-italic voice as the
+         wordmark) rather than a redesign — see R6-Launch-Readiness-Report.md
+         for the note that dedicated brand icon art can replace this later. -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+
+    <meta property="og:site_name" content="Tiffany Noelle Chacon" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonicalURL} />
+    {ogImageURL && <meta property="og:image" content={ogImageURL} />}
+    <meta name="twitter:card" content={ogImageURL ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {ogImageURL && <meta name="twitter:image" content={ogImageURL} />}
+
+    {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <SiteHeader />
+    <main id="main">
+      <slot />
+    </main>
+    <SiteFooter currentSeries={currentSeries} />
+  </body>
+</html>

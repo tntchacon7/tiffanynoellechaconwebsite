@@ -1,0 +1,204 @@
+---
+// Recovered verbatim (data-astro-cid-5pzzsfit).
+import Cover from "./../shared/Cover.astro";
+
+export interface Props {
+  eyebrow: string;
+  title: string;
+  pitch: string;
+  primaryCta: { label: string; href: string };
+  secondaryCta: { label: string; href: string };
+  entryCover: { image: string | null; alt: string | null };
+  flagshipCover: { image: string | null; alt: string | null };
+  thirdCover?: { image: string | null; alt: string | null } | null; // [ARTIFACT]: Equestrian Dreams uses a 3-cover "triple" media variant
+  accentVar: string;
+  accentTextVar: string;
+  reveal?: string; // [ARTIFACT]: "0.625rem" on Sports in the Sunshine State, "0px" on Equestrian Dreams
+}
+const {
+  eyebrow,
+  title,
+  pitch,
+  primaryCta,
+  secondaryCta,
+  entryCover,
+  flagshipCover,
+  thirdCover = null,
+  accentVar,
+  accentTextVar,
+  reveal = "0.625rem",
+} = Astro.props;
+---
+
+<section class="series-hero" style={`--_accent: ${accentVar}; --_accent-text: ${accentTextVar}; --_reveal: ${reveal}`}>
+  <div class="wrap wrap--wide">
+    <a class="series-hero__back" href="/books/">← All Books</a>
+    <div class="series-hero__grid">
+      <div class="series-hero__copy">
+        <p class="eyebrow">{eyebrow}</p>
+        <h1 class="series-hero__title">{title}</h1>
+        <p class="series-hero__pitch">{pitch}</p>
+        <div class="series-hero__actions">
+          <a class="btn btn--primary" href={primaryCta.href}>{primaryCta.label}</a>
+          <a class="btn btn--secondary" href={secondaryCta.href}>{secondaryCta.label}</a>
+        </div>
+      </div>
+      <div class={`series-hero__media${thirdCover ? " series-hero__media--triple" : ""}`}>
+        <div class="series-hero__cover series-hero__cover--entry">
+          <Cover image={entryCover.image} alt={entryCover.alt} accentVar={accentVar} />
+        </div>
+        <div class="series-hero__cover series-hero__cover--flagship">
+          <Cover image={flagshipCover.image} alt={flagshipCover.alt} accentVar={accentVar} />
+        </div>
+        {thirdCover && (
+          <div class="series-hero__cover series-hero__cover--third">
+            <Cover image={thirdCover.image} alt={thirdCover.alt} accentVar={accentVar} />
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .series-hero {
+    padding-top: var(--space-lg);
+    padding-bottom: var(--space-2xl);
+    overflow: hidden;
+  }
+  .series-hero__back {
+    display: inline-block;
+    font-size: var(--step--1);
+    color: var(--color-muted);
+    text-decoration: none;
+    margin-bottom: var(--space-xl);
+  }
+  .series-hero__back:hover {
+    color: var(--_accent-text);
+  }
+  .series-hero__grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .series-hero__title {
+    font-style: italic;
+    font-size: var(--step-5);
+    margin-top: var(--space-xs);
+    margin-bottom: var(--space-md);
+  }
+  .series-hero__pitch {
+    font-size: var(--step-1);
+    color: var(--color-muted);
+    max-width: 42ch;
+    margin-bottom: var(--space-lg);
+  }
+  .series-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  .series-hero__media {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: var(--space-lg) 0;
+  }
+  .series-hero__cover {
+    position: relative;
+    width: 13rem;
+  }
+  .series-hero__cover--entry {
+    z-index: 1;
+    transform: translate(3rem, 1.5rem);
+    opacity: 0.92;
+  }
+  .series-hero__cover--flagship {
+    z-index: 2;
+    width: 16.5rem;
+    margin-left: calc(-5.25rem + var(--_reveal, 0px));
+    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-sm);
+  }
+  .series-hero__media--triple .series-hero__cover--entry {
+    width: 10.5rem;
+    transform: translateY(1.75rem);
+  }
+  .series-hero__media--triple .series-hero__cover--flagship {
+    z-index: 3;
+    width: 15.5rem;
+    margin-left: -4.25rem;
+  }
+  .series-hero__cover--third {
+    position: relative;
+    z-index: 2;
+    width: 10.5rem;
+    margin-left: -4.25rem;
+    transform: translateY(1rem);
+    opacity: 0.94;
+  }
+  @media (max-width: 900px) {
+    .series-hero__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+    }
+    .series-hero__media {
+      order: -1;
+      padding-top: 0;
+      padding-bottom: var(--space-sm);
+    }
+    .series-hero__title {
+      font-size: var(--step-4);
+    }
+    .series-hero__cover {
+      width: 15rem;
+    }
+    .series-hero__cover--flagship {
+      width: 19rem;
+      margin-left: calc(-6.25rem + var(--_reveal, 0px));
+    }
+    .series-hero__cover--entry {
+      transform: translate(3.5rem, 1.75rem);
+    }
+    .series-hero__media--triple .series-hero__cover--entry {
+      width: 12rem;
+      transform: translateY(2rem);
+    }
+    .series-hero__media--triple .series-hero__cover--flagship {
+      width: 17rem;
+      margin-left: -4.75rem;
+    }
+    .series-hero__cover--third {
+      width: 12rem;
+      margin-left: -4.75rem;
+      transform: translateY(1.25rem);
+    }
+  }
+  @media (max-width: 480px) {
+    .series-hero__cover {
+      width: 11rem;
+    }
+    .series-hero__cover--flagship {
+      width: 13.75rem;
+      margin-left: calc(-4.25rem + var(--_reveal, 0px));
+    }
+    .series-hero__cover--entry {
+      transform: translate(2.25rem, 1.25rem);
+    }
+    .series-hero__media--triple .series-hero__cover--entry {
+      width: 8rem;
+      transform: translateY(1.5rem);
+    }
+    .series-hero__media--triple .series-hero__cover--flagship {
+      width: 11rem;
+      margin-left: -3rem;
+    }
+    .series-hero__cover--third {
+      width: 8rem;
+      margin-left: -3rem;
+      transform: translateY(1rem);
+    }
+  }
+</style>

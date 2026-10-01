@@ -1,0 +1,110 @@
+---
+// =============================================================================
+// [R6 NEW PAGE] Privacy Policy
+// -----------------------------------------------------------------------------
+// This page did NOT exist before R6 — the global footer has linked to
+// /privacy-policy/ since early in the project, but the page itself was never
+// built, so it 404'd on every page of the site. That is a genuine launch
+// blocker (no site that collects an email address via a newsletter form
+// should launch without a privacy policy), so this exists to fix it.
+//
+// IMPORTANT — what this is and isn't:
+// This is a conservative, honest, generic policy describing ONLY what this
+// specific site actually does (a newsletter email-capture form, standard
+// hosting/traffic logs, outbound Amazon Associates and BookFunnel links).
+// Nothing about a specific email provider, analytics tool, or data-retention
+// practice is asserted beyond what's true of the current build. This is NOT a
+// substitute for review by a qualified attorney — flagged clearly in
+// R6-Launch-Readiness-Report.md as something Tyler/Tiffany should have
+// reviewed before (or shortly after) launch, same as most small-business
+// sites launch with a reasonable starting policy and refine it. See the
+// [R6.1 UPDATE] The one placeholder this page needed — a contact email —
+// is now filled in with the address Tyler supplied (tiffanynoellechacon@gmail.com),
+// also used on the new /contact/ page. No other content below was changed.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const CONTACT_EMAIL = "tiffanynoellechacon@gmail.com";
+---
+
+<BaseLayout
+  title="Privacy Policy — Tiffany Noelle Chacon"
+  description="How this website handles the information it collects."
+>
+  <section class="section legal">
+    <div class="wrap wrap--narrow legal__content">
+      <p class="eyebrow">Legal</p>
+      <h1>Privacy Policy</h1>
+      <p class="legal__updated">Last updated: August 2026</p>
+
+      <p>
+        This Privacy Policy explains what information this website collects, how it's used, and the choices you
+        have. It applies to tiffanynoellechacon.com only.
+      </p>
+
+      <h2>Information You Provide</h2>
+      <p>
+        If you sign up for the newsletter, we collect the email address you provide. It's used to send you the
+        content you signed up for — a free book, new release announcements, and occasional updates — and nothing
+        else. We don't sell, rent, or trade your email address to anyone.
+      </p>
+      <p>Every newsletter email includes an unsubscribe link, and you can opt out at any time.</p>
+
+      <h2>Information Collected Automatically</h2>
+      <p>
+        Like most websites, this site's hosting provider automatically logs standard technical information when you
+        visit — things like your browser type, general device information, and which pages were viewed — for basic
+        security and reliability purposes. This site does not use tracking cookies for advertising.
+      </p>
+
+      <h2>Links to Other Sites</h2>
+      <p>
+        This site links out to third-party retailers and services, including Amazon and BookFunnel, to sell or
+        deliver books. As an Amazon Associate, Tiffany earns from qualifying purchases made through those links.
+        Once you leave this site, that retailer's own privacy policy applies — this policy doesn't cover their
+        practices.
+      </p>
+
+      <h2>Children's Privacy</h2>
+      <p>This site is not directed at children under 13, and does not knowingly collect information from them.</p>
+
+      <h2>Changes to This Policy</h2>
+      <p>
+        This policy may be updated from time to time as the site changes. The "Last updated" date above will reflect
+        any changes.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions about this policy or your information? Email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal {
+    padding-block: var(--space-2xl);
+  }
+  .legal__content h1 {
+    font-style: italic;
+    font-size: var(--step-4);
+    margin-block: var(--space-2xs) var(--space-2xs);
+  }
+  .legal__updated {
+    color: var(--color-muted);
+    font-size: var(--step--1);
+    margin-bottom: var(--space-lg);
+  }
+  .legal__content h2 {
+    font-size: var(--step-1);
+    margin-block: var(--space-xl) var(--space-xs);
+  }
+  .legal__content p {
+    color: var(--color-ink);
+    max-width: 68ch;
+    margin-bottom: var(--space-sm);
+  }
+  .legal__content a {
+    color: var(--color-tiffany-text);
+  }
+</style>

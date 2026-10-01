@@ -1,0 +1,94 @@
+---
+// [R6 NEW PAGE] Terms of Use — see privacy-policy/index.astro's header
+// comment for the full context (this page had the same problem: linked from
+// the global footer since early in the project, never built, 404'd
+// sitewide). Same conservative approach: describes only what's actually true
+// of this specific site, flagged for legal review before/shortly after
+// launch rather than presented as a final, attorney-drafted document.
+//
+// [R6.1 UPDATE] Contact placeholder filled in with the address Tyler
+// supplied (tiffanynoellechacon@gmail.com), also used on /contact/.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const CONTACT_EMAIL = "tiffanynoellechacon@gmail.com";
+---
+
+<BaseLayout title="Terms of Use — Tiffany Noelle Chacon" description="The terms that apply to using this website.">
+  <section class="section legal">
+    <div class="wrap wrap--narrow legal__content">
+      <p class="eyebrow">Legal</p>
+      <h1>Terms of Use</h1>
+      <p class="legal__updated">Last updated: August 2026</p>
+
+      <p>
+        These Terms of Use govern your use of tiffanynoellechacon.com. By using this site, you agree to these
+        terms.
+      </p>
+
+      <h2>Content</h2>
+      <p>
+        All text, images, and design on this site are the property of Tiffany Noelle Chacon (or used with
+        permission) and may not be copied or reused without permission, other than normal browsing, sharing links,
+        and quoting brief excerpts with attribution.
+      </p>
+
+      <h2>Books &amp; Purchases</h2>
+      <p>
+        Books are sold and delivered through third-party retailers and services (including Amazon and BookFunnel).
+        Purchases, refunds, and delivery are subject to that retailer's own terms — this site doesn't process
+        payments or handle order fulfillment directly.
+      </p>
+      <p>
+        As an Amazon Associate, Tiffany earns from qualifying purchases made through Amazon links on this site.
+      </p>
+
+      <h2>Newsletter</h2>
+      <p>
+        Signing up for the newsletter is optional and free, and you can unsubscribe at any time using the link in
+        any newsletter email.
+      </p>
+
+      <h2>No Warranty</h2>
+      <p>
+        This site is provided as-is. While every effort is made to keep it accurate and available, we don't
+        guarantee it will always be error-free or uninterrupted.
+      </p>
+
+      <h2>Changes</h2>
+      <p>These terms may be updated from time to time. The "Last updated" date above will reflect any changes.</p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions about these terms? Email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal {
+    padding-block: var(--space-2xl);
+  }
+  .legal__content h1 {
+    font-style: italic;
+    font-size: var(--step-4);
+    margin-block: var(--space-2xs) var(--space-2xs);
+  }
+  .legal__updated {
+    color: var(--color-muted);
+    font-size: var(--step--1);
+    margin-bottom: var(--space-lg);
+  }
+  .legal__content h2 {
+    font-size: var(--step-1);
+    margin-block: var(--space-xl) var(--space-xs);
+  }
+  .legal__content p {
+    color: var(--color-ink);
+    max-width: 68ch;
+    margin-bottom: var(--space-sm);
+  }
+  .legal__content a {
+    color: var(--color-tiffany-text);
+  }
+</style>

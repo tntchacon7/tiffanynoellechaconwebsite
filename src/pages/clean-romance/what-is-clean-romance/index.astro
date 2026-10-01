@@ -1,0 +1,241 @@
+---
+// =============================================================================
+// [R5 NEW PAGE] "What Is Clean Romance?" — the Reading Room's cornerstone
+// guide. Built from two source types, per the R5 brief's source priority:
+//   1. The R5 brief's own approved editorial guardrails (Part 6) — these set
+//      the factual/definitional boundaries for every claim below.
+//   2. A transcript of a Clean Romance Podcast episode where Tiffany and her
+//      co-host Sarah Hickner discuss this exact topic — used as a primary
+//      editorial source for tone, real anecdotes, and the practical
+//      definitional distinctions they draw (see "Notes on sources" below).
+//   3. Independent web research, to verify externally-checkable claims
+//      (see Reading-Room-Research.md for the full source list).
+//
+// NOTES ON SOURCES — what was deliberately left out of the transcript, and why
+// -----------------------------------------------------------------------------
+// The transcript's discussion of clean romance runs considerably broader than
+// this article: it also covers the hosts' personal faith journeys, several
+// Bible passages, and a discussion of why they choose not to feature
+// LGBTQIA+ characters in the books they write or recommend. None of that
+// appears here. Three reasons, all traceable to the brief itself:
+//   - Part 6's approved guardrails — the actual boundaries this article is
+//     scoped to — define "clean romance," "closed door," "fade to black,"
+//     and "no spice" in secular, reader-facing terms (explicit content,
+//     profanity). They say nothing about faith framing or character
+//     representation, so importing either would be inventing scope the
+//     brief never approved.
+//   - Part 5 explicitly asks for a tone that is "warm, conversational,
+//     knowledgeable... not a sermon... not a defensive argument about
+//     romance publishing" — the transcript's theological argument and its
+//     discussion of representation are exactly that register, not this
+//     article's.
+//   - The project's own standing instruction on Find Your Next Read (from
+//     the prior R4 phase) was to "keep representation out of chooser" —
+//     i.e., not to make representation a filterable/discussed axis in
+//     reader-facing tooling. Leaving it out of this article keeps that same
+//     line consistent across the site.
+// What *was* kept from the transcript: the concrete, practical distinctions
+// Tiffany and Sarah draw between "clean," "closed door," and "no spice"; the
+// real anecdote about a neighbor being confused by the term "closed door
+// romance"; the point that a closed-door label doesn't by itself tell a
+// reader about language, since that's a separate consideration; and
+// Tiffany's own plain-language promise to her readers. See
+// Reading-Room-Research.md and R5-Report.md for the fuller transcript-source
+// note.
+import GuideLayout from "../../../layouts/GuideLayout.astro";
+import EditorialCallout from "../../../components/guide/EditorialCallout.astro";
+import PullQuote from "../../../components/guide/PullQuote.astro";
+import RelatedReading from "../../../components/guide/RelatedReading.astro";
+import RelatedReadingItem from "../../../components/guide/RelatedReadingItem.astro";
+// [R6 FIX] Every other content page on the site (the Reading Room hub, every
+// book page, every series page) ends with <Newsletter />, which is also the
+// target of the global footer's "Newsletter" link (#newsletter). This article
+// page was the one R5 page that omitted it — an oversight, not a documented
+// decision (contrast with /books/, which deliberately omits it to match the
+// recovered legacy page — see the comment near the bottom of that file). The
+// R6 audit found the footer's #newsletter link 404s-to-nowhere (no matching id)
+// on this specific page. Adding it restores consistency and fixes that link.
+import Newsletter from "../../../components/shared/Newsletter.astro";
+
+const title = "What Is Clean Romance? A Reader's Guide to the Terms — Tiffany Noelle Chacon";
+const description =
+  "What \"clean romance\" actually means, how it differs from \"closed door\" and \"fade to black,\" what \"no spice\" really refers to, and how to find clean romance that fits what you're actually looking for.";
+const canonicalPath = "/clean-romance/what-is-clean-romance/";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "What Is Clean Romance? A Reader's Guide to the Terms",
+  description,
+  author: { "@type": "Person", name: "Tiffany Noelle Chacon", url: "https://www.tiffanynoellechacon.com/about/" },
+  publisher: { "@type": "Organization", name: "Tiffany Noelle Chacon" },
+  mainEntityOfPage: { "@type": "WebPage", "@id": `https://www.tiffanynoellechacon.com${canonicalPath}` },
+  image: "https://www.tiffanynoellechacon.com/images/author/headshot-secondary.jpg",
+  // No datePublished/dateModified: this site has no existing "published on"
+  // convention, and R5 isn't inventing one — see the header comment above.
+};
+---
+
+<GuideLayout
+  title={title}
+  description={description}
+  eyebrow="The Clean Romance Reading Room"
+  heading="What Is Clean Romance? A Reader's Guide to the Terms"
+  dek="Clean, closed door, fade to black, no spice — the words readers use to talk about this genre don't always mean the same thing to the next person. Here's how I use them, and how to find what actually fits what you're looking for."
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Clean Romance", href: "/clean-romance/" },
+    { label: "What Is Clean Romance?" },
+  ]}
+  canonicalPath={canonicalPath}
+  ogImage="/images/author/headshot-secondary.jpg"
+  structuredData={structuredData}
+>
+  <p>
+    A few years ago I mentioned to a new neighbor that I write romance novels. She lit up — she reads a lot of
+    romance herself — and invited me to a book event that, it turned out, was <em>very</em> far from what I write.
+    My husband had been introducing me around the neighborhood as "my wife writes closed door romance, or clean
+    romance," and somewhere along the way he just stopped using the first term. Almost nobody outside the romance
+    community actually knows what "closed door" means. Half the time, "clean" needs explaining too.
+  </p>
+  <p>
+    So this is the article I wish I could just hand people: what these terms actually mean, where they overlap and
+    where they don't, and how to find clean romance that fits what <em>you</em> specifically want — not just what
+    the label on the cover implies.
+  </p>
+
+  <h2>What does "clean romance" actually mean?</h2>
+  <p>
+    At its core, clean romance is romance written without explicit sexual content on the page, and generally without
+    strong profanity. Readers might get real chemistry, tension, and a great kiss — but the story doesn't take you
+    into the bedroom, and it doesn't rely on graphic language to make a scene land.
+  </p>
+  <p>
+    That's the short version, and it holds up for the vast majority of what gets shelved as clean romance. But if
+    you go looking for a single, universally agreed-upon definition — an actual industry standard everyone signs off
+    on — you won't find one. Readers and authors have been debating the exact edges of "clean" for years, because
+    there's no equivalent of a movie rating board for romance novels. Amazon eventually created its own "Clean &amp;
+    Wholesome Romance" category to give the term some retail structure, which tells you two things at once: enough
+    readers wanted it to matter, and no existing category was doing the job cleanly enough on its own.
+  </p>
+  <p>
+    In practice, that means "clean" is doing a lot of work as an umbrella term. It's less a strict rulebook and more
+    a signal — a way of telling a reader, before they buy, roughly what kind of experience they're getting.
+  </p>
+
+  <h2>"Clean," "closed door," and "fade to black" aren't quite the same word</h2>
+  <p>
+    These three terms get used almost interchangeably online, and I understand why — they're circling the same
+    general idea. But they're not identical, and the differences actually matter if you're trying to find something
+    specific.
+  </p>
+  <p>
+    <strong>Closed door</strong> is the term you'll hear most from readers and authors, and it's also the most
+    misleading one, because the name itself implies something it usually doesn't mean. "Closed door" sounds like
+    there's a door — like intimacy is happening, just off-page, and the story simply cuts away before showing it.
+    That's the reading most people default to. But in practice, most books marketed as closed door don't have any
+    door to close at all: there's no sexual intimacy between the characters, on the page or off. The term is really
+    describing what you won't see on the page, not making a claim about what's happening in the story's world — it
+    just doesn't sound that way, which is exactly why so many readers (and plenty of people outside the romance
+    community entirely) end up assuming the wrong thing.
+  </p>
+  <p>
+    <strong>Fade to black</strong> is a narrower, more literal version of the same idea — the scene is clearly
+    heading somewhere, and the narration cuts away right as things get intimate, then picks back up after. It
+    implies something did happen; the camera just looked away. Not every closed-door book uses this technique, and
+    not every clean romance has anything to fade away from in the first place.
+  </p>
+  <p>
+    <strong>Clean</strong> is the broadest of the three. Readers generally use it as a wider content signal — folding
+    in language and tone alongside what is or isn't shown on the page — where "closed door" is really just talking
+    about the handling of sexual content specifically. A book can be closed door and still have language or content
+    some clean-romance readers wouldn't consider "clean." That's exactly why relying on just one of these words can
+    leave you with the wrong book in your hands.
+  </p>
+
+  <EditorialCallout eyebrow="Worth knowing" title="A closed-door label isn't a full content guide">
+    <p>
+      Because "closed door" is specifically about sexual content, it doesn't automatically tell you anything about
+      profanity, innuendo, violence, or other things you might be sensitive to. Two closed-door books can land in
+      very different places on everything else. If those details matter to you, it's worth checking for an author's
+      note or content notes rather than assuming the label covers it.
+    </p>
+  </EditorialCallout>
+
+  <h2>What about "no spice"?</h2>
+  <p>
+    "Spice" has become the go-to shorthand for a book's heat level, largely thanks to reader communities on
+    BookTok and Bookstagram rating books on an informal pepper or chili scale. "No spice" simply means a book sits
+    at the bottom of that scale — little to no sexual content. It's genuinely useful reader shorthand, but it's
+    worth knowing it's exactly that: an informal, crowd-sourced label, not a formal publishing classification the
+    way a retailer category is. You'll see "no spice" used by readers to describe books that would also be called
+    clean or closed door — the terms overlap heavily in practice, even though they came from different corners of
+    the reading community.
+  </p>
+
+  <PullQuote attribution="Tiffany Noelle Chacon">
+    People think "closed door" means I'm writing something explicit and just cutting away from it. Usually it means
+    the opposite — there's nothing back there to cut away from.
+  </PullQuote>
+
+  <h2>Tiffany's own promise</h2>
+  <p>
+    All of that is genre terminology — useful for describing the wider clean-romance shelf, but not a description of
+    any one author's books. So to be specific about mine: my reader promise is <strong>Kisses Only. No explicit
+    scenes. Ever.</strong> Not "usually." Not "mostly closed door with one exception." Every book I publish holds to
+    that line, along with keeping the page free of profanity.
+  </p>
+  <p>
+    That doesn't mean my books avoid real stakes. A number of my stories deal with genuinely heavy things — grief,
+    trauma, family estrangement, the kind of fear that follows an accident — because clean doesn't mean shallow. It
+    means the romance itself stays kisses-only while the rest of the story is allowed to be as honest as it needs to
+    be. If a book of mine touches on something sensitive, I try to flag it plainly rather than let a reader discover
+    it cold.
+  </p>
+
+  <h2>What "clean" might not tell you — and how to actually find your fit</h2>
+  <p>
+    Because none of these terms are policed by any single standard, the most reliable way to find clean romance that
+    actually matches what you want isn't to trust the label alone. A few things that help:
+  </p>
+  <ul>
+    <li>
+      <strong>Check the specific promise, not just the shelf.</strong> "Clean" on a retailer category page can mean
+      several different things depending on who applied it. An author's own stated content promise (like mine above)
+      is more precise than the genre label.
+    </li>
+    <li>
+      <strong>Decide what you actually mean by "clean."</strong> Are you specifically avoiding explicit scenes? Also
+      avoiding profanity? Looking for zero on-page intimacy versus fade-to-black? Knowing your own answer makes it
+      much easier to tell whether a given book fits.
+    </li>
+    <li>
+      <strong>Look for content or trigger notes</strong> when a topic matters to you specifically — grief, violence,
+      past trauma, and similar subjects can appear in a clean romance without any conflict with "clean" as a rating,
+      since that term is about explicit content and language, not subject matter.
+    </li>
+  </ul>
+  <p>
+    If you're specifically looking for something from my own catalog, that's exactly what
+    <a href="/find-your-next-read/">Find Your Next Read</a> is for — pick the tropes, settings, or sports you're in
+    the mood for, and it'll match you against my books directly, with any relevant content notes right alongside the
+    result.
+  </p>
+
+  <RelatedReading title="Continue in the Reading Room">
+    <RelatedReadingItem
+      title="The Clean Romance Reading Room"
+      description="More guides for finding your next clean read, as the library grows."
+      href="/clean-romance/"
+      cta="Visit the hub"
+    />
+    <RelatedReadingItem
+      title="Find Your Next Read"
+      description="Answer a few quick questions and get matched to one of Tiffany's own books."
+      href="/find-your-next-read/"
+      cta="Find a book"
+    />
+  </RelatedReading>
+
+  <Newsletter />
+</GuideLayout>

@@ -1,0 +1,204 @@
+---
+// Recovered verbatim from all Artifacts that render a book shelf/card
+// (data-astro-cid-3fvxjd35): My Books, all 3 series pages, and Promise You
+// the Moon. Every recovered card's "Learn more" action is a disabled
+// placeholder span reading "Learn more — page coming soon" — confirmed
+// true for every book except Promise You the Moon, which has a real detail
+// page; that page passes `href` to render a real link instead.
+import Cover from "./../shared/Cover.astro";
+
+export interface Props {
+  id: string;
+  variant: "feature" | "shelf";
+  spotlight?: boolean;
+  comingSoon?: boolean;
+  kicker: string; // e.g. "Prequel novella", "Book One", "Book Three"
+  startHere?: boolean;
+  title: string;
+  coauthor?: string | null; // e.g. "Co-written with Lindsay Rochester"
+  hook?: string | null;
+  note?: string | null; // e.g. "Title and cover not yet announced — currently in progress."
+  tropes?: string[];
+  badge?: string | null; // e.g. "Coming Soon"
+  cover: { image: string | null; alt: string | null };
+  accentVar: string; // e.g. "var(--series-sunshine-state)"
+  accentTextVar: string; // e.g. "var(--series-sunshine-state-text)"
+  href?: string | null;
+}
+
+const {
+  id,
+  variant,
+  spotlight = false,
+  comingSoon = false,
+  kicker,
+  startHere = false,
+  title,
+  coauthor = null,
+  hook = null,
+  note = null,
+  tropes = [],
+  badge = null,
+  cover,
+  accentVar,
+  accentTextVar,
+  href = null,
+} = Astro.props;
+
+const classes = [
+  "book-card",
+  variant === "feature" ? "book-card--feature" : "book-card--shelf",
+  spotlight ? "book-card--spotlight" : null,
+  comingSoon ? "book-card--coming-soon" : null,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<article class={classes} id={id} style={`--_accent: ${accentVar}; --_accent-text: ${accentTextVar}`}>
+  <div class="book-card__cover">
+    <Cover image={cover.image} alt={cover.alt} placeholderTitle={title} accentVar={accentVar} />
+  </div>
+  <div class="book-card__body">
+    <p class="book-card__kicker">
+      {kicker}
+      {startHere && <span class="book-card__starthere">· Start Here</span>}
+    </p>
+    <h3 class="book-card__title">{title}</h3>
+    {coauthor && <p class="book-card__coauthor">{coauthor}</p>}
+    {hook && <p class="book-card__hook">{hook}</p>}
+    {note && <p class="book-card__note">{note}</p>}
+    {tropes.length > 0 && (
+      <ul class="book-card__tropes">
+        {tropes.map((t) => (
+          <li><span class="chip">{t}</span></li>
+        ))}
+      </ul>
+    )}
+    <div class="book-card__meta">{badge && <span class="badge book-card__badge">{badge}</span>}</div>
+    <div class="book-card__actions">
+      {href ? (
+        <a class="btn btn--quiet" href={href}>
+          Learn More <span class="btn-arrow" aria-hidden="true">→</span>
+        </a>
+      ) : (
+        <span class="btn btn--quiet" aria-disabled="true">Learn more — page coming soon</span>
+      )}
+    </div>
+  </div>
+</article>
+
+<style>
+  .book-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  .book-card--shelf {
+    width: 13rem;
+    flex: 0 0 auto;
+  }
+  .book-card--feature {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-xl);
+    width: 100%;
+  }
+  .book-card--feature .book-card__cover {
+    width: 13rem;
+    flex-shrink: 0;
+  }
+  .book-card__kicker {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--_accent-text);
+  }
+  .book-card__starthere {
+    color: var(--color-ink);
+    opacity: 0.7;
+  }
+  .book-card__title {
+    font-style: italic;
+    font-size: var(--step-1);
+    margin-top: var(--space-3xs);
+  }
+  .book-card--feature .book-card__title {
+    font-size: var(--step-3);
+  }
+  .book-card__coauthor {
+    font-size: var(--step--1);
+    color: var(--_accent-text);
+    font-weight: 600;
+    margin-top: var(--space-3xs);
+  }
+  .book-card__hook {
+    font-size: var(--step--1);
+    color: var(--color-muted);
+    margin-top: var(--space-2xs);
+  }
+  .book-card--shelf .book-card__hook {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .book-card--feature .book-card__hook {
+    font-size: var(--step-0);
+    max-width: 56ch;
+    margin-top: var(--space-sm);
+  }
+  .book-card__note {
+    font-size: var(--step--1);
+    color: var(--color-muted);
+    font-style: italic;
+    margin-top: var(--space-2xs);
+  }
+  .book-card__tropes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3xs);
+    margin-top: var(--space-xs);
+  }
+  .book-card__tropes .chip {
+    color: var(--_accent-text);
+    font-size: 0.72rem;
+    padding: 0.3em 0.7em;
+  }
+  .book-card--feature .book-card__tropes .chip {
+    font-size: var(--step--1);
+    padding: 0.4em 0.85em;
+  }
+  .book-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-xs);
+  }
+  .book-card__badge {
+    color: var(--color-gold-text);
+  }
+  .book-card__actions {
+    margin-top: var(--space-2xs);
+  }
+  .book-card--coming-soon .book-card__cover {
+    opacity: 0.85;
+  }
+  .book-card--spotlight {
+    background: color-mix(in srgb, var(--_accent) 10%, transparent);
+    border-radius: var(--radius-lg);
+    padding: var(--space-sm);
+  }
+  .book-card--shelf.book-card--spotlight {
+    width: calc(13rem + var(--space-sm) * 2);
+  }
+  @media (max-width: 700px) {
+    .book-card--feature {
+      flex-direction: column;
+    }
+    .book-card--feature .book-card__cover {
+      width: 11rem;
+    }
+  }
+</style>

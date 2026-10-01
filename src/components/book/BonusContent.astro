@@ -1,0 +1,49 @@
+---
+// [R6 ADDITION] Small, book-specific bonus-content link — sample chapters,
+// deleted/secret scenes, and audio samples that lived on the old site's
+// grab-bag /bonus-content-freebies/ page (a page this rebuild does not
+// carry forward, per Tyler's decision — see R6-Launch-Readiness-Report.md).
+// Each of these is tied to ONE specific book, not a series or the whole
+// site, so — per Tyler's decision — each renders only on that book's own
+// detail page, right beside its Buy/Read Free button, rather than on a
+// shared hub page. Not every book has one; pages that don't import this
+// component simply don't render a bonus-content line at all.
+//
+// Distinct on purpose from RetailCTA (the Buy/Read Free button just above
+// this): that's about getting the book itself; this is extra material for
+// someone who already has it or is deciding whether to. Both open on
+// BookFunnel, so both carry the same target/rel treatment.
+export interface Props {
+  kind: "sample" | "bonus-scene" | "secret-scene" | "audio";
+  title?: string; // optional flavor title, e.g. "Falling / Flying" or "The Untold Story of Prankmas"
+  url: string;
+}
+const { kind, title, url } = Astro.props;
+
+const KIND_LABEL: Record<Props["kind"], string> = {
+  sample: "Read a Sample Chapter",
+  "bonus-scene": "Get the Bonus Scene",
+  "secret-scene": "Get the Secret Scene",
+  audio: "Listen to the Audio Sample",
+};
+---
+
+<div class="bonus-content">
+  <p class="eyebrow bonus-content__eyebrow">Bonus Content</p>
+  <a class="btn btn--quiet bonus-content__link" href={url} target="_blank" rel="noopener noreferrer">
+    {title ? `${KIND_LABEL[kind]} — "${title}"` : KIND_LABEL[kind]}
+    <span class="btn-arrow" aria-hidden="true">→</span>
+  </a>
+</div>
+
+<style>
+  .bonus-content {
+    margin-top: var(--space-sm);
+  }
+  .bonus-content__eyebrow {
+    margin-bottom: var(--space-3xs);
+  }
+  .bonus-content__link {
+    padding-inline: 0;
+  }
+</style>

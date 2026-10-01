@@ -1,0 +1,67 @@
+---
+// Recovered verbatim (data-astro-cid-rob3y5qi) — the horizontal reading-order
+// nav strip reused on My Books and all 3 series pages.
+export interface Props {
+  items: { code: string; title: string; href: string }[];
+  accentTextVar: string;
+}
+const { items, accentTextVar } = Astro.props;
+---
+
+<nav class="reading-order" aria-label="Reading order" style={`--_accent-text: ${accentTextVar}`}>
+  <ol>
+    {items.map((item) => (
+      <li>
+        <a href={item.href}>
+          <span class="reading-order__code">{item.code}</span>
+          <span class="reading-order__title">{item.title}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .reading-order {
+    overflow-x: auto;
+  }
+  .reading-order ol {
+    display: flex;
+    align-items: center;
+    min-width: max-content;
+  }
+  .reading-order li {
+    display: flex;
+    align-items: center;
+  }
+  .reading-order li:not(:last-child):after {
+    content: "";
+    width: 1.5rem;
+    height: 1px;
+    background: var(--color-border);
+    margin-inline: var(--space-xs);
+    flex-shrink: 0;
+  }
+  .reading-order a {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2xs);
+    text-decoration: none;
+    padding: var(--space-3xs) var(--space-2xs);
+    border-radius: var(--radius-sm);
+  }
+  .reading-order__code {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--_accent-text);
+  }
+  .reading-order__title {
+    font-size: var(--step--1);
+    color: var(--color-muted);
+    white-space: nowrap;
+  }
+  .reading-order a:hover .reading-order__title {
+    color: var(--color-ink);
+  }
+</style>

@@ -1,0 +1,58 @@
+---
+// [R5 ADDITION] Shared breadcrumb component for the Reading Room. Markup and
+// styling are intentionally identical to the inline `.breadcrumbs` pattern
+// already used on every book detail page (see e.g. src/pages/books/jump.astro)
+// — this is the same visual convention, just extracted into one reusable
+// component instead of copy-pasted again, since the Reading Room introduces
+// more than one page that needs it. The existing book pages are left exactly
+// as they are; nothing there was changed to build this.
+export interface Props {
+  items: { label: string; href?: string }[];
+}
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol class="wrap wrap--wide breadcrumbs__list">
+    {items.map((item, i) => (
+      <li class="breadcrumbs__item">
+        {item.href ? <a href={item.href}>{item.label}</a> : <span aria-current="page">{item.label}</span>}
+        {i < items.length - 1 && <span class="breadcrumbs__sep" aria-hidden="true">/</span>}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs {
+    padding-top: var(--space-md);
+  }
+  .breadcrumbs__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3xs);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--color-muted);
+  }
+  .breadcrumbs__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3xs);
+  }
+  .breadcrumbs__item a {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+  .breadcrumbs__item a:hover {
+    color: var(--color-tiffany-text);
+    text-decoration: underline;
+  }
+  .breadcrumbs__item [aria-current="page"] {
+    color: var(--color-ink);
+  }
+  .breadcrumbs__sep {
+    opacity: 0.5;
+  }
+</style>

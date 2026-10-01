@@ -1,0 +1,134 @@
+# [R6 ADDITION] Deployment configuration for Netlify — see
+# R6-Launch-Readiness-Report.md ("Deployment Recommendation") for why Netlify
+# is recommended: free static hosting with generous limits, one-click GitHub
+# auto-deploy (push to main → live), free automatic SSL on a custom domain,
+# and redirect rules live in this same repo (no separate dashboard config to
+# keep in sync). No credentials or secrets live in this file — connecting the
+# GitHub repo and pointing the domain both happen in Tyler's own Netlify
+# account, which this file can't do on its own (see the report for the exact
+# steps).
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Astro 4.16 requires Node 18.17+/20.3+/22+ — pinning 22 (LTS at time of
+  # writing, and the version this project was built/tested against) avoids
+  # Netlify silently picking a different default later.
+  NODE_VERSION = "22"
+
+# -----------------------------------------------------------------------------
+# Redirects — old tiffanynoellechacon.com URLs (WordPress/Elementor/
+# WooCommerce) to their closest equivalent on the new site. Sourced from
+# R6-Redirect-Map.md; see that file for the full research and reasoning
+# behind each mapping, including the pages intentionally left un-redirected
+# (safe 404s, or pages needing a decision from Tiffany that couldn't be made
+# automatically). All 301s (permanent) since the old URLs are being retired,
+# not temporarily moved.
+# -----------------------------------------------------------------------------
+
+[[redirects]]
+  from = "/product/jump/"
+  to = "/books/jump/"
+  status = 301
+
+[[redirects]]
+  from = "/product/fall/"
+  to = "/books/fall/"
+  status = 301
+
+[[redirects]]
+  from = "/product/soar/"
+  to = "/books/soar/"
+  status = 301
+
+[[redirects]]
+  from = "/product/off-the-bench/"
+  to = "/books/off-the-bench/"
+  status = 301
+
+[[redirects]]
+  from = "/jump-the-novel/"
+  to = "/books/jump/"
+  status = 301
+
+[[redirects]]
+  from = "/off-the-bench-teaser/"
+  to = "/books/off-the-bench/"
+  status = 301
+
+[[redirects]]
+  from = "/what-sport-are-you/"
+  to = "/books/pucks-and-pranks/"
+  status = 301
+
+[[redirects]]
+  from = "/guessthesport/"
+  to = "/books/pucks-and-pranks/"
+  status = 301
+
+[[redirects]]
+  from = "/reviewjump/"
+  to = "/books/jump/"
+  status = 301
+
+[[redirects]]
+  from = "/glossary/"
+  to = "/series/equestrian-dreams/"
+  status = 301
+
+[[redirects]]
+  from = "/product-category/equine-fiction/"
+  to = "/series/equestrian-dreams/"
+  status = 301
+
+[[redirects]]
+  from = "/shop/"
+  to = "/books/"
+  status = 301
+
+[[redirects]]
+  from = "/product-category/sports-romance/"
+  to = "/books/"
+  status = 301
+
+# Interim redirects for pages flagged "NEEDS TIFFANY DECISION" in
+# R6-Redirect-Map.md — routed to the closest reasonable destination so the
+# old link isn't a dead end, but each is a placeholder until Tiffany decides
+# whether the underlying content/feature should come back in some form.
+[[redirects]]
+  from = "/launch-team/"
+  to = "/books/jump/"
+  status = 301
+
+[[redirects]]
+  from = "/jump-book-club-guide/"
+  to = "/books/jump/"
+  status = 301
+
+[[redirects]]
+  from = "/media-speaking/"
+  to = "/about/"
+  status = 301
+
+# Resolved (not a placeholder): the old bonus-content/freebies hub's 8 items
+# were redistributed to their own book pages (see BonusContent.astro and
+# R6-Launch-Readiness-Report.md), so this now points to the closest single
+# destination for a reader who followed the old link looking for any of them.
+[[redirects]]
+  from = "/bonus-content-freebies/"
+  to = "/books/"
+  status = 301
+
+# Resolved (not a placeholder): the new site now has a real /contact/ page
+# (R6.1), so the old contact URL has a genuine destination, not an interim one.
+[[redirects]]
+  from = "/contact-me/"
+  to = "/contact/"
+  status = 301
+
+# NOT redirected (left to 404 via src/pages/404.astro): WooCommerce/WordPress
+# artifacts with no reader-facing value (/cart/, /checkout/, /my-account/,
+# assorted auto-generated category/tag/portfolio-demo pages), and one-time
+# past event pages. See R6-Redirect-Map.md for the full list and reasoning.

@@ -1,0 +1,98 @@
+---
+// [R6 UPDATE] This block was previously a plain HTML email form with no live
+// endpoint behind it — see the git history / R6-Launch-Readiness-Report.md
+// for that history. Per Tyler's decision, it's now a real link out to a
+// BookFunnel "newsletter builder" landing page: BookFunnel collects the
+// email there, hands the subscriber to Kit automatically (Tyler's existing
+// BookFunnel → Kit pipeline, same as every other reader magnet he runs), and
+// delivers the ebook — so this component doesn't need to own email capture
+// or talk to Kit directly at all.
+//
+// Featured book: Pucks & Pranks (Tyler's stated preference for the one he
+// wants to push hardest) — previously Shoot the Moon. If that preference
+// ever changes, swap FEATURED_SLUG and NEWSLETTER_BOOKFUNNEL_URL below
+// together; the rest of the copy derives from catalog.js automatically.
+//
+// Tyler also supplied newsletter-builder URLs for three other titles, not
+// used here but kept for whenever a future per-series/contextual reader
+// magnet is wanted (an AFTER LAUNCH idea, not built now — see the report):
+//   Shoot the Moon (Love in Starlight Valley):        https://dl.bookfunnel.com/nkviqnxhle
+//   Off Course (Equestrian Dreams):                    https://dl.bookfunnel.com/1k6t1su57s
+//   A Holly Jolly Christmas Cubicle:                   https://dl.bookfunnel.com/5hgcan9may
+//
+// IMPORTANT: these are distinct from the "Read Free on BookFunnel" links on
+// each book's own detail page (catalog.js's `retail` field) — those are
+// separate, no-email-required direct downloads, and were deliberately left
+// unchanged (Tyler's explicit call) so reading a free novella from its own
+// page still doesn't require joining the list.
+import Cover from "./Cover.astro";
+import { getBookBySlug } from "../../data/catalog.js";
+
+const FEATURED_SLUG = "pucks-and-pranks";
+const NEWSLETTER_BOOKFUNNEL_URL = "https://dl.bookfunnel.com/3uy2a88zpp";
+
+const featured = getBookBySlug(FEATURED_SLUG);
+---
+
+<section class="section newsletter" id="newsletter">
+  <div class="wrap newsletter__grid">
+    <div class="newsletter__cover">
+      <Cover image={featured?.cover.image} alt={featured?.cover.alt} />
+    </div>
+    <div class="newsletter__copy">
+      <p class="eyebrow">Get a Free Book</p>
+      <h2>Start with {featured?.title} — on the house.</h2>
+      <p>
+        Join Tiffany's reader list for a free copy of {featured?.title}, plus new release news and the occasional
+        peek behind the scenes. No spam, unsubscribe anytime.
+      </p>
+      <a
+        class="btn btn--primary newsletter__cta"
+        href={NEWSLETTER_BOOKFUNNEL_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Send Me the Free Book
+      </a>
+      <p class="field-note">
+        Opens on BookFunnel, where you'll enter your email to get your free copy. We respect your privacy —
+        unsubscribe at any time.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .newsletter__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+    gap: var(--space-2xl);
+    align-items: center;
+  }
+  .newsletter__copy p:not(.field-note) {
+    color: var(--color-muted);
+    max-width: 46ch;
+    margin-block: var(--space-sm) var(--space-lg);
+  }
+  .newsletter__cta {
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: var(--space-sm);
+  }
+  .field-note {
+    max-width: 40ch;
+  }
+  @media (max-width: 780px) {
+    .newsletter__grid {
+      grid-template-columns: 1fr;
+    }
+    .newsletter__cover {
+      max-width: 9rem;
+      margin-inline: auto;
+    }
+    .newsletter__cta {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>

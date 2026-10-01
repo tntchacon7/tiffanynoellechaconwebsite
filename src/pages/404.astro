@@ -1,0 +1,60 @@
+---
+// [R6 ADDITION] No 404 page existed before this — Astro's default is a bare,
+// unstyled "404" (or, depending on host, no custom page at all). Built to
+// dist/404.html, which every mainstream static host (Netlify, Vercel,
+// Cloudflare Pages, GitHub Pages) automatically serves for any unmatched
+// path. Kept intentionally small: on-brand, gives a reader somewhere useful
+// to go, does not try to guess or redirect based on the broken URL.
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Page Not Found — Tiffany Noelle Chacon" description="This page couldn't be found.">
+  <section class="section not-found">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">Page Not Found</p>
+      <h1 class="not-found__title">This page took a wrong turn.</h1>
+      <p class="not-found__body">
+        The page you're looking for doesn't exist — it may have moved, or the link might be out of date. Here are a
+        few good places to pick back up:
+      </p>
+      <ul class="not-found__links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/books/">My Books</a></li>
+        <li><a href="/find-your-next-read/">Find Your Next Read</a></li>
+        <li><a href="/clean-romance/">The Clean Romance Reading Room</a></li>
+        <li><a href="/about/">About Tiffany</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding-block: var(--space-3xl);
+    text-align: center;
+  }
+  .not-found__title {
+    font-style: italic;
+    font-size: var(--step-4);
+    margin-block: var(--space-2xs) var(--space-md);
+  }
+  .not-found__body {
+    color: var(--color-muted);
+    max-width: 46ch;
+    margin-inline: auto;
+    margin-bottom: var(--space-lg);
+  }
+  .not-found__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-sm) var(--space-lg);
+    list-style: none;
+    padding: 0;
+  }
+  .not-found__links a {
+    font-weight: 500;
+    color: var(--color-tiffany-text);
+    text-decoration: underline;
+  }
+</style>

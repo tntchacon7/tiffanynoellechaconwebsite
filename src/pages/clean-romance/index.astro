@@ -1,0 +1,216 @@
+---
+// [R5 NEW PAGE] The Clean Romance Reading Room hub — the editorial/search
+// side of the site, distinct from the interactive, Tiffany-only
+// /find-your-next-read/ tool (see that page and Find-Your-Next-Read-Plan.md).
+// Uses BaseLayout directly (not GuideLayout) since this is a composed
+// landing page with a hero/grid/bridge structure, not a single-column
+// article — the same pattern index.astro and about.astro already use.
+//
+// The "Browse by what you're craving" categories below are presented as a
+// clearly-labeled roadmap, not live links, since none of those guide pages
+// exist yet (Part 13's content roadmap covers them for a future phase) —
+// this mirrors the exact "Coming soon" inert-row convention already
+// recovered on the homepage's own Reading Room teaser (see
+// src/pages/index.astro), rather than inventing a second pattern for the
+// same idea.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/guide/Breadcrumbs.astro";
+import Newsletter from "../../components/shared/Newsletter.astro";
+
+const title = "The Clean Romance Reading Room — Tiffany Noelle Chacon";
+const description =
+  "A library of guides for finding your next clean romance — what the terms mean, how to browse by what you're craving, and where Tiffany's own books fit in.";
+
+const CRAVING_CATEGORIES = [
+  "Sports Romance",
+  "Small-Town Romance",
+  "Romantic Comedy",
+  "Christmas Romance",
+  "Equestrian Romance",
+  "Marriage of Convenience",
+  "Grumpy/Sunshine",
+];
+---
+
+<BaseLayout title={title} description={description} ogImage="/images/author/homepage-hero-outdoor.jpg">
+  <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Clean Romance" }]} />
+
+  <section class="rr-hero">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">The Clean Romance Reading Room</p>
+      <h1 class="rr-hero__title">Find your next clean romance.</h1>
+      <p class="rr-hero__body">
+        This is a place to make sense of clean-romance terms and tropes, and — as the library grows — to find
+        well-matched books to read next. It starts here with what "clean romance" even means, and it'll grow into
+        guides for browsing by trope, setting, and sport. Tiffany's own books are part of that library, clearly
+        marked as her own whenever they come up.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--tight rr-cornerstone">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">Start Here</p>
+      <a class="rr-cornerstone__card" href="/clean-romance/what-is-clean-romance/">
+        <span class="rr-cornerstone__kicker">The Cornerstone Guide</span>
+        <h2 class="rr-cornerstone__title">What Is Clean Romance?</h2>
+        <p class="rr-cornerstone__dek">
+          Clean, closed door, fade to black, no spice — a plain-language guide to what these terms actually mean,
+          how they overlap, and how to find what fits what you're looking for.
+        </p>
+        <span class="rr-cornerstone__cta">Read the guide <span aria-hidden="true">→</span></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section section--surface rr-browse">
+    <div class="wrap wrap--narrow">
+      <div class="section-head">
+        <p class="eyebrow">Coming to the Reading Room</p>
+        <h2>Browse by what you're craving</h2>
+        <p class="rr-browse__intro">
+          The Reading Room is just getting started. These are the categories on deck — each will become its own
+          guide as it's written, rather than a placeholder that pretends to be one already.
+        </p>
+      </div>
+      <ul class="rr-browse__list">
+        {CRAVING_CATEGORIES.map((label) => (
+          <li>
+            <span class="rr-browse__row" aria-disabled="true">
+              <span class="rr-browse__title">{label}</span>
+              <span class="chip chip--muted">Coming soon</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--tight rr-bridge">
+    <div class="wrap wrap--narrow rr-bridge__inner">
+      <div>
+        <p class="eyebrow">Looking for one of Tiffany's own books?</p>
+        <h2 class="rr-bridge__title">Try the interactive book finder.</h2>
+        <p class="rr-bridge__body">
+          The Reading Room is about clean romance broadly. If you specifically want to find one of Tiffany's own
+          books, Find Your Next Read matches you to one based on the tropes, settings, and sports you're in the mood
+          for.
+        </p>
+      </div>
+      <a class="btn btn--secondary" href="/find-your-next-read/">Find Your Next Read</a>
+    </div>
+  </section>
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  .rr-hero {
+    padding-block: var(--space-xl) var(--space-lg);
+  }
+  .rr-hero__title {
+    font-size: var(--step-5);
+    margin-top: var(--space-sm);
+    max-width: 18ch;
+  }
+  .rr-hero__body {
+    margin-top: var(--space-md);
+    font-size: var(--step-1);
+    color: var(--color-muted);
+    max-width: 52ch;
+  }
+
+  .rr-cornerstone__card {
+    display: block;
+    background: var(--color-white);
+    border: var(--border-hairline);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color var(--duration-fast) var(--ease-editorial), box-shadow var(--duration-fast) var(--ease-editorial);
+  }
+  .rr-cornerstone__card:hover {
+    border-color: var(--color-tiffany);
+    box-shadow: var(--shadow-md);
+  }
+  .rr-cornerstone__kicker {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-tiffany-text);
+  }
+  .rr-cornerstone__title {
+    font-size: var(--step-4);
+    margin-top: var(--space-xs);
+  }
+  .rr-cornerstone__dek {
+    margin-top: var(--space-sm);
+    color: var(--color-muted);
+    max-width: 56ch;
+    font-size: var(--step-0);
+  }
+  .rr-cornerstone__cta {
+    display: inline-block;
+    margin-top: var(--space-md);
+    font-weight: 600;
+    color: var(--color-rose-text);
+  }
+
+  .rr-browse__intro {
+    color: var(--color-muted);
+    max-width: 52ch;
+  }
+  .rr-browse__list {
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--space-md);
+  }
+  .rr-browse__list li {
+    border-bottom: var(--border-hairline);
+  }
+  .rr-browse__list li:first-child {
+    border-top: var(--border-hairline);
+  }
+  .rr-browse__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding-block: var(--space-md);
+  }
+  .rr-browse__title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-1);
+  }
+
+  .rr-bridge__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+  }
+  .rr-bridge__title {
+    margin-top: var(--space-2xs);
+    font-size: var(--step-2);
+  }
+  .rr-bridge__body {
+    margin-top: var(--space-xs);
+    color: var(--color-muted);
+    max-width: 46ch;
+  }
+
+  @media (max-width: 560px) {
+    .rr-hero__title {
+      font-size: var(--step-4);
+    }
+    .rr-browse__row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-2xs);
+    }
+  }
+</style>
